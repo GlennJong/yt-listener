@@ -53,7 +53,7 @@ function getCaption(ajax_response) {
 }
 
 function handleFetchYoutubeCaption(id) {
-  const url = `https://video.google.com/timedtext?type=track&lang=en&v=${id}&id=0`;
+  const url = `https://video.google.com/timedtext?type=track&lang=en-GB&v=${id}&id=0`;
 
   return new Promise((resolve, reject) => {
     Axios.post(url)

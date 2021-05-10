@@ -1,37 +1,6 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
-
-const Item = ({ data, onClick, ...props}) => {
-
-  function getSplitSentence(str) {
-    const splitSentence = str.split(/(\s+)(\w+)/g);
-    const result = splitSentence.map(item => {
-      if (item.match(/\w+/)) {
-        return { type: 'button', content: item }
-      }
-      else {
-        return item;
-      }
-    })
-
-    return result;
-  }
-  
-  return (
-    <li {...props}>
-      <div>
-        {
-          getSplitSentence(data.content).map((item, i) =>
-            item.type === 'button' ?
-            <button key={i}>{ item.content }</button>
-            :
-            <span key={i}>{ item }</span>
-          )
-        }
-      </div>
-      <button data-sec={data.start} onClick={onClick}>move</button>
-    </li>
-  )
-}
+import styled from 'styled-components';
+import Item from '../Item';
 
 const List = forwardRef(({ onItemClick }, ref) => {
   const [data, setData] = useState([]);
@@ -58,14 +27,19 @@ const List = forwardRef(({ onItemClick }, ref) => {
   }
   
   return (
-    <ul>
+    <Root>
       {
         data?.map((item, i) =>
           <Item onClick={onItemClick} key={i} data={item} />
         )
       }
-    </ul>
+    </Root>
   )
 })
+
+const Root = styled.ul`
+  
+`
+
 
 export default List;

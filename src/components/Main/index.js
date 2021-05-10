@@ -8,7 +8,7 @@ const Main = () => {
   const playerRef = useRef(null);
   const listRef = useRef(null);
 
-  const captions = useCaptionGetter('MBRqu0YOH14');
+  const captions = useCaptionGetter('2USh8OmgiJE');
   
   function handleSaveCurrentTimeData() {
     const time = playerRef.current.getCurrentTime();
@@ -22,7 +22,7 @@ const Main = () => {
       const start = Number(caption.start);
       const end =  start + Number(caption.dur);
       if (sec > start && sec <= end) {
-        content = { start: start, end: end, content: caption.content };
+        content = { start: start, end: end, content: caption.content, spot: sec };
         return;
       }
     });
@@ -40,8 +40,8 @@ const Main = () => {
       {
         captions &&
         <>
-          <Player ref={playerRef} id='MBRqu0YOH14' />
-          <button onClick={handleSaveCurrentTimeData}>Click</button>
+          <Player ref={playerRef} id='2USh8OmgiJE' />
+          <SaveButton onClick={handleSaveCurrentTimeData}>Click</SaveButton>
           <List ref={listRef} onItemClick={handleVideoMove} />
         </>
       }
@@ -53,6 +53,10 @@ const Root = styled.div`
   margin: 0 auto;
   width: 480px;
   max-width: 100%;
+`
+const SaveButton = styled.button`
+  ${'' /* border: 0;
+  background: transparent; */}
 `
 
 export default Main;
