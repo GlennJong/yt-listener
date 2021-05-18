@@ -1,6 +1,43 @@
 import { useEffect, useState } from 'react';
 import Axios from 'axios';
 
+function getCaptionList(ajax_response) {
+  const parser = new DOMParser();
+
+  const xmlDoc = parser.parseFromString(ajax_response.data, "text/xml");
+
+  const tracks = [];
+  
+  function getTrackContent(node) {
+    if (node.getAttribute('lang_code').includes('en')) {
+      return node.getAttribute('lang_code');
+    }
+  }
+  
+  try {
+    if (xmlDoc.getElementsByTagName("transcript_list").length > 0) {
+      for (var i = 0; i < xmlDoc.getElementsByTagName("transcript_list")[0].childNodes.length; i++) {
+        const caption = getTrackContent(xmlDoc.getElementsByTagName("transcript_list")[0].childNodes[i]);
+        if (caption) tracks.push(caption);
+        
+      }
+    }
+    else {
+      for (var i = 0; i < ajax_response.getElementsByTagName("transcript_list")[0].childNodes.length; i++) {
+        const caption = getTrackContent(ajax_response.getElementsByTagName("transcript_list")[0].childNodes[i]);
+        if (caption) tracks.push(caption);
+      }
+    }
+
+    return tracks;
+  }
+  catch (error) {
+    console.log(error);
+    alert('Oops, something went wrong.');
+  }
+  
+}
+
 function getCaption(ajax_response) {
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(ajax_response.data, "text/xml");
@@ -52,8 +89,8 @@ function getCaption(ajax_response) {
   }
 }
 
-function handleFetchYoutubeCaption(id) {
-  const url = `https://video.google.com/timedtext?type=track&lang=en-GB&v=${id}&id=0`;
+function handleFetchYoutubeCaption(id, lang) {
+  const url = `https://video.google.com/timedtext?type=track&lang=${lang}&v=${id}&id=0`;
 
   return new Promise((resolve, reject) => {
     Axios.post(url)
@@ -61,6 +98,20 @@ function handleFetchYoutubeCaption(id) {
       const captions = getCaption(res);
       resolve(captions);
     })
+    .catch(reject);
+  })
+}
+
+function handleFetchYoutubeCaptionList(id) {
+  const url = `http://video.google.com/timedtext?type=list&v=${id}`;
+  
+  return new Promise((resolve, reject) => {
+    Axios.post(url)
+    .then(res => {
+      const list = getCaptionList(res);
+      resolve(list);
+    })
+    .catch(reject);
   })
 }
 
@@ -71,8 +122,13 @@ const useCaptionGetter = (id) => {
   useEffect(() => {
     (async function() {
       try {
-        const captionData = await handleFetchYoutubeCaption(id);
-        setResult(captionData);
+        const captionList = await handleFetchYoutubeCaptionList(id);
+        console.log(captionList)
+        const lang = captionList !== [] ? captionList[0] : null;
+        if (lang) {
+          const captionData = await handleFetchYoutubeCaption(id, lang);
+          setResult(captionData);
+        }
       }
       catch (err) {
       }

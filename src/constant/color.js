@@ -7,6 +7,7 @@ export const color = {
   middle: '#3282b8',
   white: '#bbe1fa',
   
+  
   dark: '#1b262c',
   button: '#0f4c75',
   text: '#3282b8',
