@@ -24,7 +24,6 @@ const Root = styled.button`
   padding: 3px 0px;
   height: 100%;
   cursor: pointer;
-  color: ${color.white};
   transition: transform .15s cubic-bezier(.69,-0.39,.39,2.06);
   &:before {
     content: "";
@@ -35,7 +34,7 @@ const Root = styled.button`
     width: calc(100% + 8px);
     height: 100%;
     box-shadow: 2px 2px 3px hsla(0, 0%, 0%, .5);
-    background: ${color.darken};
+    background: ${color.black.normal};
     opacity: 0;
     z-index: -1;
   }

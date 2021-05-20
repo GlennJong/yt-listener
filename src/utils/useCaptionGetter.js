@@ -123,7 +123,6 @@ const useCaptionGetter = (id) => {
     (async function() {
       try {
         const captionList = await handleFetchYoutubeCaptionList(id);
-        console.log(captionList)
         const lang = captionList !== [] ? captionList[0] : null;
         if (lang) {
           const captionData = await handleFetchYoutubeCaption(id, lang);

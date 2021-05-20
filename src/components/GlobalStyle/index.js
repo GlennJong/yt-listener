@@ -1,5 +1,5 @@
-import { createGlobalStyle, keyframes } from 'styled-components';
-import { color } from '../../constant/color';
+import { createGlobalStyle } from 'styled-components';
+import { gradient } from '../../constant/color';
 const fontFamily = `'Pingfang TC', '微軟正黑體', 'Microsoft JhengHei', sans-serif`;
 
 const GlobalStyle = createGlobalStyle`
@@ -8,7 +8,10 @@ const GlobalStyle = createGlobalStyle`
         font-family: ${fontFamily};
         font-weight: 400;
         font-size: 16px;
-        background: ${color.dark};
+        background: ${gradient.background};
+        background-size: 100% 100%;
+        width: 100vw;
+        height: 100vh;
     }
     #app {
         display: flex;

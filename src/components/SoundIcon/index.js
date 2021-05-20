@@ -31,7 +31,7 @@ const Root = styled.div`
     margin-top: -2px;
     width: 1px;
     height: 10px;
-    background: ${color.middle};
+    ${'' /* background: ${color.middle}; */}
     ${animations.map((animation, i) => (
       css`
         &:nth-child(${i+1}) {

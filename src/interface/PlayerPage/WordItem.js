@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Play } from '@styled-icons/boxicons-regular';
-import ToggleButton from '../ToggleButton';
+import ToggleButton from '../../components/ToggleButton';
 import { color, gradient } from '../../constant/color';
 
 const Item = ({ data, onClick, ...props}) => {
@@ -56,18 +56,20 @@ const PlayButton = styled.button`
   width: 24px;
   height: 24px;
   background: transparent;
-  color: ${color.middle};
+  color: ${color.white.normal};
   svg {
     margin-top: -2px;
   }
 `
 
 const Sentence = styled.div`
-
+  width: calc(100% - 36px);
 `
 
 const WordButton = styled(ToggleButton)`
-
+  margin-left: -1px;
+  margin-right: -1px;
+  color: ${color.pureWhite};
 `
 
 export default Item;

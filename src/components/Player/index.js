@@ -11,8 +11,7 @@ const opts = {
   },
 };
 
-const YoutubePlayer = forwardRef(({ id, ...props }, ref) => {
-
+const YoutubePlayer = forwardRef(({ id, onReady=null, ...props }, ref) => {
   const [ video, setVideo ] = useState(null);
   
   useEffect(() => {
@@ -21,25 +20,27 @@ const YoutubePlayer = forwardRef(({ id, ...props }, ref) => {
     }
   }, [video])
 
-  useEffect(() => {
-
-    
-  }, [])
-  
   function handleListenPlayer(item) {
     setVideo(item.target);
-    console.log(item.target)
+    onReady && onReady();
   }
   
   return (
     <Root {...props}>
-      <YouTube videoId={id} opts={opts} onReady={handleListenPlayer} />
+      <YouTube className="player" videoId={id} opts={opts} onReady={handleListenPlayer} />
     </Root>
   )
 })
 
 const Root = styled.div`
-  > div {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+  .player {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     iframe {
@@ -47,6 +48,7 @@ const Root = styled.div`
       height: 100% !important;
     }
   }
+
 `
 
 export default YoutubePlayer;

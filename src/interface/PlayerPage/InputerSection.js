@@ -1,11 +1,11 @@
 import React, { useRef } from 'react';
 
-const Inputer = ({ getUrl }) => {
+const InputerSection = ({ onGetUrl }) => {
 
   const inputRef = useRef(null);
 
   function handleClickToGetInput() {
-    getUrl(inputRef.current.value);
+    onGetUrl(inputRef.current.value);
   }
   
   return (
@@ -16,4 +16,4 @@ const Inputer = ({ getUrl }) => {
   )
 }
 
-export default Inputer;
+export default InputerSection;
