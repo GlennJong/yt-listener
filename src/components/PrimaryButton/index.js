@@ -2,9 +2,6 @@ import styled from 'styled-components';
 import { gradient } from '../../constant/color';
 
 const PrimaryButton = styled.button`
-  position: absolute;
-  bottom: 40px;
-  left: 40px;
   border: 0;
   border-radius: 50%;
   width: 60px;

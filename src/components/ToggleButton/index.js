@@ -5,9 +5,9 @@ import { color } from '../../constant/color';
 const ToggleButton = ({onClick=null, children, ...props}) => {
   const [ active, setActive ] = useState(false);
 
-  function handleClickButton() {
+  function handleClickButton(e) {
     setActive(!active);
-    onClick && onClick();
+    onClick && onClick({ event: e, active: !active});
   }
   
   return (

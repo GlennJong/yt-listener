@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import Axios from 'axios';
 
 function getCaptionList(ajax_response) {
   const parser = new DOMParser();
 
-  const xmlDoc = parser.parseFromString(ajax_response.data, "text/xml");
+  const xmlDoc = parser.parseFromString(ajax_response, "text/xml");
 
   const tracks = [];
   
@@ -40,7 +39,7 @@ function getCaptionList(ajax_response) {
 
 function getCaption(ajax_response) {
   const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(ajax_response.data, "text/xml");
+  const xmlDoc = parser.parseFromString(ajax_response, "text/xml");
   const captions = [];
 
   function decodeEntities(encodedString) {
@@ -91,27 +90,19 @@ function getCaption(ajax_response) {
 
 function handleFetchYoutubeCaption(id, lang) {
   const url = `https://video.google.com/timedtext?type=track&lang=${lang}&v=${id}&id=0`;
-
   return new Promise((resolve, reject) => {
-    Axios.post(url)
-    .then(res => {
-      const captions = getCaption(res);
-      resolve(captions);
-    })
-    .catch(reject);
+    fetch(url, { method: 'POST' })
+    .then(res => resolve(res.text()))
+    .catch(reject)
   })
 }
 
 function handleFetchYoutubeCaptionList(id) {
   const url = `http://video.google.com/timedtext?type=list&v=${id}`;
-  
   return new Promise((resolve, reject) => {
-    Axios.post(url)
-    .then(res => {
-      const list = getCaptionList(res);
-      resolve(list);
-    })
-    .catch(reject);
+    fetch(url, { method: 'POST' })
+    .then(res => resolve(res.text()))
+    .catch(reject)
   })
 }
 
@@ -123,10 +114,12 @@ const useCaptionGetter = (id) => {
     (async function() {
       try {
         const captionList = await handleFetchYoutubeCaptionList(id);
-        const lang = captionList !== [] ? captionList[0] : null;
+        const currentCaptionList = getCaptionList(captionList);
+        const lang = currentCaptionList !== [] ? currentCaptionList[0] : null;
         if (lang) {
           const captionData = await handleFetchYoutubeCaption(id, lang);
-          setResult(captionData);
+          const currentCaptionData = getCaption(captionData);
+          setResult(currentCaptionData);
         }
       }
       catch (err) {

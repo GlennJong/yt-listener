@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import InputerSection from './InputerSection';
 import PlayerSection from './PlayerSection';
 
-const PlayerPage = () => {
+const PlayerPage = ({ currentPage }) => {
   const [ youtubeId, setYoutubeId ] = useState('1AElONvi9WQ');
 
   function handleGetUrl(url) {
@@ -23,7 +23,7 @@ const PlayerPage = () => {
   return (
     <Page>
       { !youtubeId && <InputerSection onGetUrl={handleGetUrl} /> }
-      { youtubeId && <PlayerSection id={youtubeId} /> }
+      { youtubeId && <PlayerSection hide={ currentPage !== 'player' } id={youtubeId} /> }
     </Page>
   )
 }

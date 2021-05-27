@@ -10,7 +10,8 @@ export const color = {
 
   black: {
     dark: 'hsl(246, 19%, 22%)',
-    normal: 'hsl(248, 17%, 25%)'
+    normal: 'hsl(248, 17%, 25%)',
+    light: 'hsl(248, 15%, 28%)',
   },
 
   pureWhite: '#FFF',
@@ -20,11 +21,9 @@ export const color = {
     normal: 'hsl(204, 86%, 92%)'
   },
   
-  
-  dark: '#1b262c',
-  button: '#0f4c75',
-  text: '#3282b8',
-  bright: '#bbe1fa'
+  gray: {
+    normal: 'hsl(237, 10%, 63%)'
+  }
 }
 
 export const gradient = {

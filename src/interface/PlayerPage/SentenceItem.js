@@ -1,10 +1,10 @@
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Play } from '@styled-icons/boxicons-regular';
 import ToggleButton from '../../components/ToggleButton';
-import { color, gradient } from '../../constant/color';
+import { color } from '../../constant/color';
 
-const Item = ({ data, onClick, ...props}) => {
+const SentenceItem = ({ data, onReplayClick, onWordClick, ...props}) => {
 
   function getSplitSentence(str) {
     const splitSentence = str.split(/(\s+)(\w+)/g);
@@ -20,13 +20,16 @@ const Item = ({ data, onClick, ...props}) => {
     return result;
   }
 
-  function handleClickToMarkWord(e) {
+  function handleClickToMarkWord({event, active}) {
+    const { word } = event.currentTarget.dataset;
+    const status = active ? 'add' : 'remove';
+    onWordClick({ word, status, origin: data.content })
   }
   
   return (
     <Root {...props}>
-      <PlayButton data-sec={data.start} onClick={onClick}>
-        <Play size={16} />
+      <PlayButton data-sec={data.start} onClick={onReplayClick}>
+        <Play size={14} />
       </PlayButton>
       <Sentence>
         {
@@ -49,17 +52,17 @@ const Root = styled.li`
 `
 
 const PlayButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-right: 12px;
   border: 2px solid ${color.middle};
   border-radius: 50%;
   padding: 0;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   background: transparent;
   color: ${color.white.normal};
-  svg {
-    margin-top: -2px;
-  }
 `
 
 const Sentence = styled.div`
@@ -72,4 +75,4 @@ const WordButton = styled(ToggleButton)`
   color: ${color.pureWhite};
 `
 
-export default Item;
+export default SentenceItem;

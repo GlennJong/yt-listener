@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useRef } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const ToggleSlider = forwardRef(({ children }, ref) => {
   const rootRef = useRef(null);
@@ -43,7 +43,9 @@ const Root = styled.div`
   overflow: hidden;
   transition: max-height .3s ease;
 
-  &.active { max-height: 30vh; }
+  &.active { 
+    max-height: 50vh;
+  }
 `
 
 export default ToggleSlider;

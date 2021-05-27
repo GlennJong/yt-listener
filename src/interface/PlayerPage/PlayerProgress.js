@@ -3,12 +3,12 @@ import React from 'react';
 import styled from 'styled-components';
 import SoundIcon from '../../components/SoundIcon'
 
-const PlayerTitle = ({ title }) => {
+const PlayerTitle = ({ duration }) => {
   
   return (
     <Root>
       <SoundIcon className="icon" />
-      <Title className="title">{ title }</Title>
+      <Title className="title">{ duration }</Title>
     </Root>
   );
 }

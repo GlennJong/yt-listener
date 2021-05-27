@@ -1,12 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore, combineReducers } from 'redux';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import wordLibrary from './store/wordLibrary';
+
+const reducer = combineReducers({
+  wordLibrary: wordLibrary.reducer
+});
+
+const store = createStore(reducer);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

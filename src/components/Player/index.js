@@ -22,7 +22,12 @@ const YoutubePlayer = forwardRef(({ id, onReady=null, ...props }, ref) => {
 
   function handleListenPlayer(item) {
     setVideo(item.target);
-    onReady && onReady();
+    
+    const data = {
+      title: item.target.getVideoData().title,
+      duration: item.target.getDuration(),
+    }
+    onReady && onReady(data);
   }
   
   return (
