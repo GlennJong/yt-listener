@@ -22,7 +22,6 @@ function handleGetTranslate(word) {
     fetch('https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=zh-TW',
     {
       headers: {
-        'Ocp-Apim-Subscription-Key': '6a611498edaa4dddb017d93a4841235f',
         'content-type': 'application/json'
       },
       method: 'POST',
