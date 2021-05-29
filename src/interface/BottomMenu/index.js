@@ -35,6 +35,7 @@ const Root = styled.div`
   height: 90px;
   background: ${color.black.light};
   box-sizing: border-box;
+  z-index: 1;
   > .left, > .right {
     display: flex;
     align-items: flex-start;

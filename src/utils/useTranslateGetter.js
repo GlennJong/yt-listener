@@ -17,23 +17,19 @@ function useTranslatGetter(word) {
   return result;
 }
 
-function handleGetTranslate(word) {
-  new Promise((resolve, reject) => {
+export function handleGetTranslate(word) {
+  return new Promise((resolve, reject) => {
     fetch('https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=zh-TW',
     {
       headers: {
         'content-type': 'application/json'
       },
       method: 'POST',
-      body: `[{'Text': ${word}}]`
+      body: `[{'Text': '${word}'}]`
     }).then(res => {
-      const result = res.json();
-      const { text } = result[0].translations[0];
-      resolve(text);
-    }).catch(err => {
-      console.log(err);
-      reject(false);
-    });
+      resolve(res.json())
+    })
+    .catch(reject);
   })
 }
 

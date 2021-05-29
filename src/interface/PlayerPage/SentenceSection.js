@@ -91,6 +91,7 @@ const SentenceSection = forwardRef(({ captions, status, onReplayClick }, ref) =>
     <Root>
       { sentenceData.length === 0 &&
         <Hint>
+          { status === 'clickToReplay' && 'Really? Press ↺ to replay again 🤔'}
           { status === 'clickToSave' && 'Great! Press ＋ to add first sentence 🎉'}
           { status === 'clickToPlay' && 'Hi! Press ▸ to start your listening 👍'}
         </Hint>

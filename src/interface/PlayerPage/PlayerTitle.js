@@ -3,11 +3,11 @@ import React from 'react';
 import styled from 'styled-components';
 import SoundIcon from '../../components/SoundIcon'
 
-const PlayerTitle = ({ title }) => {
+const PlayerTitle = ({ title, status, onClick, ...props }) => {
   
   return (
-    <Root>
-      <SoundIcon className="icon" />
+    <Root onClick={onClick} {...props}>
+      <SoundIcon status={status} className="icon" />
       <Title className="title">{ title }</Title>
     </Root>
   );

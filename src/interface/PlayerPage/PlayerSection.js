@@ -9,17 +9,24 @@ import Player from '../../components/Player';
 
 import PlayerTitle from './PlayerTitle';
 import PlayerProgress from './PlayerProgress';
+import PlayerController from './PlayerController';
 import SentenceSection from './SentenceSection';
 
 import { color, gradient } from '../../constant/color';
 import { Youtube as YoutubeIcon } from '@styled-icons/boxicons-logos';
-import { Play, Pause, Plus, Loader } from '@styled-icons/boxicons-regular';
+import { Play, Pause, Plus, Loader, Reset } from '@styled-icons/boxicons-regular';
 
 const PlayerSection = ({ hide=false, id }) => {
-  const sliderRef = useRef(null);
+  const playerSliderRef = useRef(null);
+  const controllerSliderRef = useRef(null);
+  
   const playerRef = useRef(null);
   const listRef = useRef(null);
+  const controllerRef = useRef(null);
+  const timerRef = useRef(null);
+
   const [ play, setPlay ] = useState(false);
+  const [ finish, setFinish ] = useState(false);
   const [ ready, setReady ] = useState(false);
   const [ videoData, setVideoData ] = useState(null);
 
@@ -30,25 +37,41 @@ const PlayerSection = ({ hide=false, id }) => {
     if (captions) setReady(true);
   }
 
+  useEffect(() => {
+    if (playerRef.current && !hide) {
+      const isFinish = playerRef.current.getCurrentTime() / playerRef.current.getDuration() >= 0.99;
+      isFinish && setFinish(true);
+    }
+  }, [playerRef, hide]);
+
   const MainButtonStatus = useMemo(() => {
     let status;
     // 在介面 | 已播放
     if (!hide && play) status = 'clickToSave';
     // 不在介面 | 已播放
     if (hide && play) status = 'clickToPause';
-
+    // 不在介面 | 已播放
+    
     // 在介面 | 已暫停
     if (!hide && !play) status = 'clickToPlay';
     // 不在介面 | 已暫停
     if (hide && !play) status = 'clickToPlay';
     
+    if (!play && finish) status = 'clickToReplay';
+
     return status
-  }, [hide, play]);
+  }, [hide, play, finish]);
+
+  useEffect(() => {
+    updateFinishTimer(play ? 'play' : 'stop');
+  }, [play]);
 
   function handleClickMainButton() {
-
     switch (MainButtonStatus) {
       case 'clickToPlay': handleVideoPlay();
+        break;
+
+      case 'clickToReplay': handleVideoReplay();
         break;
 
       case 'clickToPause': handleVideoPause();
@@ -60,7 +83,6 @@ const PlayerSection = ({ hide=false, id }) => {
       default: handleVideoPlay();
         break;
     }
-
   }
   
   function handleSaveCurrentTimeData() {
@@ -74,32 +96,61 @@ const PlayerSection = ({ hide=false, id }) => {
   }
 
   function handleVideoPlay() {
-      playerRef.current.playVideo();
-      setPlay(true);
+    playerRef.current.playVideo();
+    controllerRef.current.sync();
+    setPlay(true);
+  }
+
+  function handleVideoReplay() {
+    playerRef.current.playVideo();
+    controllerRef.current.sync();
+    setFinish(false);
+    setPlay(true);
   }
 
   function handleVideoPause() {
     playerRef.current.pauseVideo();
+    controllerRef.current.deSync();
     setPlay(false);
   }
 
-  function handleTogglePlayer() {
-    sliderRef.current.toggle();
+  function handleTogglePlayerSlider() {
+    playerSliderRef.current.toggle();
+  }
+
+  function handleToggleControllerSlider() {
+    controllerSliderRef.current.toggle();
+  }
+
+  function updateFinishTimer(status='play') {
+    clearTimeout(timerRef.current);
+
+    if (status === 'play') {
+      const delta = playerRef.current.getDuration() - playerRef.current.getCurrentTime();
+      timerRef.current = setTimeout(() => {
+        setPlay(false);
+        setFinish(true);
+      }, delta * 1000);
+    }
   }
   
   return (
     <Root>
       <Application hide={hide}>
         <PlayerHead>
-          <PlayerTitle title={videoData?.title} />
-          <PlayerToggleButton onClick={handleTogglePlayer}><YoutubeIcon size="16" /></PlayerToggleButton>
+          <PlayerTitle status={play} title={videoData?.title} onClick={handleToggleControllerSlider} />
+          <PlayerToggleButton onClick={handleTogglePlayerSlider}><YoutubeIcon size="16" /></PlayerToggleButton>
         </PlayerHead>
         <PlayerWrapper>
-          <ToggleSlider ref={sliderRef}>
+          <ToggleSlider ref={playerSliderRef}>
             <Player className="player" ref={playerRef} onReady={handleCheckApplicationReady} id={id} />
           </ToggleSlider>
         </PlayerWrapper>
-        {/* <PlayerProgress duration={videoData?.duration} /> */}
+        <ControllerWrapper>
+          <ToggleSlider ref={controllerSliderRef}>
+            <PlayerController ref={controllerRef} player={playerRef.current} onProgress={updateFinishTimer} />
+          </ToggleSlider>
+        </ControllerWrapper>
         { !ready && <div>prepare the caption.</div> }
         { ready && <>
           <SentenceWrapper>
@@ -110,9 +161,10 @@ const PlayerSection = ({ hide=false, id }) => {
       <ButtonWrapper>
         <MainButton status={MainButtonStatus} disabled={!ready} onClick={handleClickMainButton}>
           { !ready && <Loader size="24" />  }
-          { (ready && MainButtonStatus === 'clickToPlay') && <Play size="24" /> }
-          { (ready && MainButtonStatus === 'clickToSave') && <Plus size="24" /> }
-          { (ready && MainButtonStatus === 'clickToPause') && <Pause size="24" /> }
+          { (ready && MainButtonStatus === 'clickToPlay')   && <Play size="24" /> }
+          { (ready && MainButtonStatus === 'clickToReplay') && <Reset size="24" /> }
+          { (ready && MainButtonStatus === 'clickToSave')   && <Plus size="24" /> }
+          { (ready && MainButtonStatus === 'clickToPause')  && <Pause size="24" /> }
         </MainButton>
       </ButtonWrapper>
     </Root>
@@ -125,7 +177,7 @@ const Root = styled.div`
 
 const Application = styled.div`
   padding: 16px;
-  padding-top: 36px;
+  padding-top: 48px;
   height: 100vh;
   max-width: 100%;
   overflow-y: auto;
@@ -151,19 +203,19 @@ const PlayerHead = styled.div`
   background: ${color.black.normal};
   box-shadow: 0px 4px 4px ${color.black.dark};
   box-sizing: border-box;
-  z-index: 1;
+  z-index: 2;
+`
+
+const ControllerWrapper = styled.div`
+  margin-bottom: 12px;
 `
 
 const PlayerWrapper = styled.div`
-  margin-bottom: 12px;
 `
 
 const SentenceWrapper = styled.div`
   position: relative;
-  width: 100%;
-  height: 100%;
   padding-bottom: 80px;
-  overflow-y: auto;
 `
 
 const ButtonWrapper = styled.div`
@@ -172,7 +224,7 @@ const ButtonWrapper = styled.div`
   left: 0;
   width: 480px;
   max-width: 100%;
-  z-index: 1;
+  z-index: 2;
 `
 
 const rotationAnimation = keyframes`

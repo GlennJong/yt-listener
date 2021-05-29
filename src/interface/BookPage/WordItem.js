@@ -3,15 +3,19 @@ import styled, {css} from 'styled-components';
 import { useDispatch } from 'react-redux';
 import wordLibrary from '../../store/wordLibrary';
 import { color } from '../../constant/color';
+import { BookBookmark } from '@styled-icons/boxicons-regular';
+import { handleGetTranslate } from '../../utils/useTranslateGetter';
 
 const WordSection = ({ data }) => {
   const NoteRef = useRef(null);
   const dispatch = useDispatch(wordLibrary);
 
   const [ active, setActive ] = useState(false);
+  const [ isTranslated, setIsTranslated ] = useState(false);
   
   function handleFocusNote() {
     setActive(true);
+    setIsTranslated(false);
   }
   
   function handleSaveNote() {
@@ -20,12 +24,25 @@ const WordSection = ({ data }) => {
     const item = {...data, note: note};
     dispatch(wordLibrary.actions.updateItemToLibrary(item));
   }
+
+  function handleClickTranslateButton(e) {
+    const { word } = e.currentTarget.dataset;
+    (async function() {
+      try {
+        const content = await handleGetTranslate(word);
+        NoteRef.current.value = content[0].translations[0].text;
+        setIsTranslated(true);
+      }
+      catch (err) { alert('translate false'); }
+    })()
+  }
   
   return (
     <Root>
       <Word>{ data.content }</Word>
       <Note active={active} ref={NoteRef} type="text" onFocus={handleFocusNote} defaultValue={data.note} />
-      {active && <CheckMask onClick={handleSaveNote} />}
+      { (active && !isTranslated) && <Button><BookBookmark data-word={data.content} onClick={handleClickTranslateButton} size="14" /></Button> }
+      { active && <CheckMask onClick={handleSaveNote} /> }
     </Root>
   )
 };
@@ -38,6 +55,20 @@ const Root = styled.div`
 const Word = styled.p`
   display: block;
   min-width: 35%;
+`
+
+const Button = styled.button`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 0;
+  padding: 0 6px;
+  border-radius: 2px;
+  margin-left: 4px;
+  color: ${color.white.normal};
+  background: ${color.primary};
+  z-index: 2;
 `
 
 const CheckMask = styled.div`
