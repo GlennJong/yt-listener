@@ -1,47 +1,64 @@
 import React, { useState, useRef } from 'react';
 import styled, {css} from 'styled-components';
-import { useDispatch } from 'react-redux';
-import wordLibrary from '../../store/wordLibrary';
 import { color } from '../../constant/color';
-import { BookBookmark } from '@styled-icons/boxicons-regular';
 import { handleGetTranslate } from '../../utils/useTranslateGetter';
+import { Smile, Cool } from '@styled-icons/boxicons-solid';
 
-const WordSection = ({ data }) => {
+const WordItem = ({ advance=false, data, onUpdate }) => {
   const NoteRef = useRef(null);
-  const dispatch = useDispatch(wordLibrary);
 
   const [ active, setActive ] = useState(false);
-  const [ isTranslated, setIsTranslated ] = useState(false);
+  const [ check, setCheck ] = useState(false);
+  const [ isTranslating, setIsTranslating ] = useState(false);
   
   function handleFocusNote() {
     setActive(true);
-    setIsTranslated(false);
+    setIsTranslating(false);
   }
   
   function handleSaveNote() {
     setActive(false);
     const note = NoteRef.current.value;
     const item = {...data, note: note};
-    dispatch(wordLibrary.actions.updateItemToLibrary(item));
+    onUpdate(item);
   }
 
   function handleClickTranslateButton(e) {
     const { word } = e.currentTarget.dataset;
+    setIsTranslating(true);
     (async function() {
       try {
         const content = await handleGetTranslate(word);
         NoteRef.current.value = content[0].translations[0].text;
-        setIsTranslated(true);
+        setIsTranslating(false);
+        setActive(false);
+        handleSaveNote();
       }
       catch (err) { alert('translate false'); }
     })()
   }
-  
+
+  function handleClickCheckButton() {
+    setCheck(true);
+    const note = NoteRef.current.value;
+    const item = {...data, note: note, check: true};
+    setTimeout(() => onUpdate(item), 1000);
+  }
+
   return (
     <Root>
       <Word>{ data.content }</Word>
       <Note active={active} ref={NoteRef} type="text" onFocus={handleFocusNote} defaultValue={data.note} />
-      { (active && !isTranslated) && <Button><BookBookmark data-word={data.content} onClick={handleClickTranslateButton} size="14" /></Button> }
+      { active &&
+        <Button disabled={isTranslating} data-word={data.content} onClick={handleClickTranslateButton} >中</Button>
+      }
+      {
+        (advance && !active) &&
+        <CheckButton disabled={check} check={check} onClick={handleClickCheckButton} >
+          { !check && <Smile size="16" /> }
+          { check && <Cool size="16" /> }
+        </CheckButton>
+      }
       { active && <CheckMask onClick={handleSaveNote} /> }
     </Root>
   )
@@ -65,10 +82,16 @@ const Button = styled.button`
   border: 0;
   padding: 0 6px;
   border-radius: 2px;
-  margin-left: 4px;
+  margin-left: 6px;
   color: ${color.white.normal};
   background: ${color.primary};
-  z-index: 2;
+  z-index: 3;
+`
+const CheckButton = styled(Button)`
+  background: ${color.black.normal};
+  ${({check}) => check && css`
+    background: ${color.black.normal};
+  `}
 `
 
 const CheckMask = styled.div`
@@ -77,7 +100,7 @@ const CheckMask = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 2;
 `
 
 const Note = styled.input`
@@ -86,7 +109,7 @@ const Note = styled.input`
   border-radius: 0;
   border-bottom: 1px solid ${color.gray.normal};
   padding: 2px 4px;
-  background: ${color.black.normal};
+  background: transparent;
   z-index: 0;
   color: ${color.white.normal};
   &:focus {
@@ -95,9 +118,9 @@ const Note = styled.input`
   ${({ active }) => active && css`
     background: ${color.white.normal};
     color: ${color.black.normal};
-    z-index: 2;
+    z-index: 3;
   `}
 `
 
 
-export default WordSection;
+export default WordItem;

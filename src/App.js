@@ -9,18 +9,21 @@ import ConfigPage from './interface/ConfigPage';
 import BottomMenu from './interface/BottomMenu';
 
 function App() {
-  const [ currentPage, setCurrentPage ] = useState('player');
+  const [ currentPage, setCurrentPage ] = useState('home');
 
-
-  const handleGetCurrentPage = (page) => {
+  function handleGetCurrentPage(page) {
     setCurrentPage(page);
+  }
+
+  function handleAutoJumpToPlayerPage() {
+    setCurrentPage('player');
   }
   
   return (
     <div className="App">
       <GlobalStyle />
         <Interface>
-          <HomePage   currentPage={currentPage} />
+          <HomePage   currentPage={currentPage} onIdReady={handleAutoJumpToPlayerPage} />
           <PlayerPage currentPage={currentPage} />
           <BookPage   currentPage={currentPage} />
           <ConfigPage currentPage={currentPage} />

@@ -8,11 +8,10 @@ import PrimaryButton from '../../components/PrimaryButton';
 import Player from '../../components/Player';
 
 import PlayerTitle from './PlayerTitle';
-import PlayerProgress from './PlayerProgress';
 import PlayerController from './PlayerController';
 import SentenceSection from './SentenceSection';
 
-import { color, gradient } from '../../constant/color';
+import { color } from '../../constant/color';
 import { Youtube as YoutubeIcon } from '@styled-icons/boxicons-logos';
 import { Play, Pause, Plus, Loader, Reset } from '@styled-icons/boxicons-regular';
 
@@ -43,6 +42,13 @@ const PlayerSection = ({ hide=false, id }) => {
       isFinish && setFinish(true);
     }
   }, [playerRef, hide]);
+
+  useEffect(() => {
+    if (controllerRef.current) {
+      if (hide) controllerRef.current.deSync()
+      else controllerRef.current.sync()
+    }
+  }, [hide])
 
   const MainButtonStatus = useMemo(() => {
     let status;
@@ -97,13 +103,13 @@ const PlayerSection = ({ hide=false, id }) => {
 
   function handleVideoPlay() {
     playerRef.current.playVideo();
-    controllerRef.current.sync();
+    if (!hide) controllerRef.current.sync();
     setPlay(true);
   }
 
   function handleVideoReplay() {
     playerRef.current.playVideo();
-    controllerRef.current.sync();
+    if (!hide) controllerRef.current.sync();
     setFinish(false);
     setPlay(true);
   }

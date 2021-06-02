@@ -6,9 +6,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import wordLibrary from './store/wordLibrary';
+import videoId from './store/videoId';
 
 const reducer = combineReducers({
-  wordLibrary: wordLibrary.reducer
+  wordLibrary: wordLibrary.reducer,
+  videoId: videoId.reducer
 });
 
 const store = createStore(reducer);

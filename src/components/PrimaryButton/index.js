@@ -15,6 +15,9 @@ const PrimaryButton = styled.button`
   &:active {
     background-image: linear-gradient(45deg, hsl(210, 40%, 20%) 0%, hsl(190, 40%, 40%) 100%);
   }
+  &:disabled {
+    opacity: 0.5;
+  }
 `
 
 export default PrimaryButton;

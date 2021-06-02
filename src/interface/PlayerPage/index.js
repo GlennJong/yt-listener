@@ -1,29 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import InputerSection from './InputerSection';
 import PlayerSection from './PlayerSection';
 
 const PlayerPage = ({ currentPage }) => {
-  const [ youtubeId, setYoutubeId ] = useState('1AElONvi9WQ');
 
-  function handleGetUrl(url) {
-
-    const youtubeId = (url) => {
-      let video_id = url.split('v=')[1];
-      const ampersandPosition = video_id.indexOf('&');
-      if (ampersandPosition != -1) {
-        video_id = video_id.substring(0, ampersandPosition);
-      }
-      return video_id;
-    }
-    setYoutubeId(youtubeId(url));
-
-  }
+  const {id} = useSelector(state => state.videoId);
   
   return (
     <Page>
-      { !youtubeId && <InputerSection onGetUrl={handleGetUrl} /> }
-      { youtubeId && <PlayerSection hide={ currentPage !== 'player' } id={youtubeId} /> }
+      { !id && '尚未添加任何影片' }
+      { id && <PlayerSection hide={ currentPage !== 'player' } id={id} /> }
     </Page>
   )
 }

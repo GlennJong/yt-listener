@@ -32,7 +32,7 @@ function getCaptionList(ajax_response) {
   }
   catch (error) {
     console.log(error);
-    alert('Oops, something went wrong.');
+    return null;
   }
   
 }
@@ -102,8 +102,20 @@ function handleFetchYoutubeCaptionList(id) {
   return new Promise((resolve, reject) => {
     fetch(url, { method: 'POST' })
     .then(res => resolve(res.text()))
-    .catch(reject)
+    .catch(() => reject(null))
   })
+}
+
+export async function checkYoutubeCaptionAvailiable(id) {
+  const captionList = await handleFetchYoutubeCaptionList(id);
+  const currentCaptionList = getCaptionList(captionList);
+  if (currentCaptionList) {
+    const result = currentCaptionList.length !== 0;
+    return result;
+  }
+  else {
+    return false;
+  }
 }
 
 

@@ -73,7 +73,7 @@ const SentenceSection = forwardRef(({ captions, status, onReplayClick }, ref) =>
       timestamp: new Date(),
     };
 
-    dispatch(wordLibrary.actions.addItemToLibrary(item));
+    dispatch(wordLibrary.actions.addItemToCurrentData(item));
   }
 
   function handleRemoveWordData(word, full) {
@@ -82,7 +82,7 @@ const SentenceSection = forwardRef(({ captions, status, onReplayClick }, ref) =>
       content: word,
     };
 
-    dispatch(wordLibrary.actions.removeItemFromLibrary(item));
+    dispatch(wordLibrary.actions.removeItemFromCurrentData(item));
   }
 
 

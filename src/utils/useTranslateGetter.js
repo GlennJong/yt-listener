@@ -1,4 +1,8 @@
 import { useEffect, useState } from 'react';
+import queryString from 'query-string';
+
+const query = queryString.parse(window.location.search);
+const key = query.key || '';
 
 function useTranslatGetter(word) {
   const [result, setResult] = useState(null);
@@ -22,6 +26,7 @@ export function handleGetTranslate(word) {
     fetch('https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=zh-TW',
     {
       headers: {
+        'Ocp-Apim-Subscription-Key': key,
         'content-type': 'application/json'
       },
       method: 'POST',
