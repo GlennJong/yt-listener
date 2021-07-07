@@ -98,7 +98,7 @@ function handleFetchYoutubeCaption(id, lang) {
 }
 
 function handleFetchYoutubeCaptionList(id) {
-  const url = `http://video.google.com/timedtext?type=list&v=${id}`;
+  const url = `https://video.google.com/timedtext?type=list&v=${id}`;
   return new Promise((resolve, reject) => {
     fetch(url, { method: 'POST' })
     .then(res => resolve(res.text()))

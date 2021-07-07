@@ -25,7 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "public": "cp -R build/.git temp && react-scripts build && cp -R temp/.git build",
+    "public": "cp -R build/.git temp && cp -R build/CNAME temp  && react-scripts build && cp -R temp/.git build && cp -R temp/CNAME build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
