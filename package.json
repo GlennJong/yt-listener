@@ -19,11 +19,13 @@
     "react-youtube": "^7.13.1",
     "redux": "^4.1.0",
     "styled-components": "^5.2.3",
-    "web-vitals": "^1.1.1"
+    "web-vitals": "^1.1.1",
+    "youtube-iframe": "^1.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "public": "cp -R build/.git temp && react-scripts build && cp -R temp/.git build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

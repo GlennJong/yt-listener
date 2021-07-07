@@ -6,11 +6,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import wordLibrary from './store/wordLibrary';
-import videoId from './store/videoId';
+import videoData from './store/videoData';
 
 const reducer = combineReducers({
   wordLibrary: wordLibrary.reducer,
-  videoId: videoId.reducer
+  videoData: videoData.reducer
 });
 
 const store = createStore(reducer);

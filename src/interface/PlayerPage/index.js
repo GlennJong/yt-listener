@@ -5,7 +5,7 @@ import PlayerSection from './PlayerSection';
 
 const PlayerPage = ({ currentPage }) => {
 
-  const {id} = useSelector(state => state.videoId);
+  const {id} = useSelector(state => state.videoData);
   
   return (
     <Page>

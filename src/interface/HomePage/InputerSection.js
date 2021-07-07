@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { color } from '../../constant/color';
-import { Headphone } from '@styled-icons/boxicons-regular';
+import { Plus } from '@styled-icons/boxicons-regular';
 import PrimaryButton from '../../components/PrimaryButton';
 import { checkYoutubeCaptionAvailiable } from '../../utils/useCaptionGetter';
 
@@ -59,14 +59,14 @@ const InputerSection = ({ onGetUrl }) => {
         { message && <Msg><p>{ message }</p></Msg> }
       </InputWrap>
       <ButtonWrap active={active}>
-        <Button disabled={!active} onClick={handleClickToGetInput}><Headphone size="24" /></Button>
+        <Button disabled={!active} onClick={handleClickToGetInput}><Plus size="24" /></Button>
       </ButtonWrap>
     </Root>
   )
 }
 
 const Root = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   padding: 24px;

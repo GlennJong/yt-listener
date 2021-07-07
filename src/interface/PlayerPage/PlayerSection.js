@@ -18,6 +18,7 @@ import { Play, Pause, Plus, Loader, Reset } from '@styled-icons/boxicons-regular
 const PlayerSection = ({ hide=false, id }) => {
   const playerSliderRef = useRef(null);
   const controllerSliderRef = useRef(null);
+  const appRef = useRef(null);
   
   const playerRef = useRef(null);
   const listRef = useRef(null);
@@ -94,6 +95,10 @@ const PlayerSection = ({ hide=false, id }) => {
   function handleSaveCurrentTimeData() {
     const time = playerRef.current.getCurrentTime();
     listRef.current.addItemBySec(time);
+    
+    if (appRef.current.scrollHeight - appRef.current.offsetHeight === appRef.current.scrollTop) {
+      setTimeout(() => appRef.current.scrollTop = 9999, 300);
+    }
   }
 
   function handleVideoMove(e) {
@@ -142,7 +147,7 @@ const PlayerSection = ({ hide=false, id }) => {
   
   return (
     <Root>
-      <Application hide={hide}>
+      <Application ref={appRef} hide={hide}>
         <PlayerHead>
           <PlayerTitle status={play} title={videoData?.title} onClick={handleToggleControllerSlider} />
           <PlayerToggleButton onClick={handleTogglePlayerSlider}><YoutubeIcon size="16" /></PlayerToggleButton>
@@ -221,7 +226,7 @@ const PlayerWrapper = styled.div`
 
 const SentenceWrapper = styled.div`
   position: relative;
-  padding-bottom: 80px;
+  padding-bottom: 120px;
 `
 
 const ButtonWrapper = styled.div`
