@@ -89,11 +89,12 @@ const SentenceSection = forwardRef(({ captions, status, onReplayClick }, ref) =>
   
   return (
     <Root>
+    
       { sentenceData.length === 0 &&
         <Hint>
-          { status === 'clickToReplay' && 'Really? Press ↺ to replay again 🤔'}
-          { status === 'clickToSave' && 'Great! Press ＋ to add first sentence 🎉'}
-          { status === 'clickToPlay' && 'Hi! Press ▸ to start your listening 👍'}
+          { status === 'clickToReplay' && <span>Press ↺ to replay again 🤔</span> }
+          { status === 'clickToSave' && <span>Great! Press <img src="/images/icon-add.svg" alt="" /> to add first sentence 🎉</span> }
+          { status === 'clickToPlay' && <span>Hi! Press <img src="/images/icon-play.svg" alt="" /> to start your listening 👍</span>}
         </Hint>
       }
       <List>
@@ -115,7 +116,13 @@ const Root = styled.div`
 `
 
 const Hint = styled.div`
-
+  span, img {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  img {
+    margin-bottom: 2px;
+  }
 `
 
 const List = styled.ul`

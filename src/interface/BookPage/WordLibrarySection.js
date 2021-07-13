@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import styled, { css } from 'styled-components';
+import React, { useMemo } from 'react';
+import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import WordItem from './WordItem';
 import wordLibrary from '../../store/wordLibrary';
@@ -7,9 +7,6 @@ import { color } from '../../constant/color';
 
 const WordLibrarySection = () => {
   const { libraryData: data } = useSelector(state => state.wordLibrary);
-
-  console.log(data)
-
   const collectionData = useMemo(() => data, [data]);
 
   const dispatch = useDispatch(wordLibrary);

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import WordItem from './WordItem';
 import wordLibrary from '../../store/wordLibrary';

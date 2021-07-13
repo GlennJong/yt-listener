@@ -41,7 +41,6 @@ const Root = styled.div`
   padding-top: 36px;
   height: 100vh;
   max-width: 100%;
-  overflow-y: auto;
   box-sizing: border-box;
   color: ${color.white.normal};
   background: ${color.black.normal};

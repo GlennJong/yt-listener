@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react';
 import styled, {css} from 'styled-components';
 import { color } from '../../constant/color';
 import { handleGetTranslate } from '../../utils/useTranslateGetter';
-import { Smile, Cool } from '@styled-icons/boxicons-solid';
+import { Check } from '@styled-icons/boxicons-regular';
+import { Cool } from '@styled-icons/boxicons-solid';
 
 const WordItem = ({ advance=false, data, onUpdate }) => {
   const NoteRef = useRef(null);
@@ -55,7 +56,7 @@ const WordItem = ({ advance=false, data, onUpdate }) => {
       {
         (advance && !active) &&
         <CheckButton disabled={check} check={check} onClick={handleClickCheckButton} >
-          { !check && <Smile size="16" /> }
+          { !check && <Check size="16" /> }
           { check && <Cool size="16" /> }
         </CheckButton>
       }

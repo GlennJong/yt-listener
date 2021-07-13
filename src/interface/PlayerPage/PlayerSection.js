@@ -65,6 +65,7 @@ const PlayerSection = ({ hide=false, id }) => {
     if (hide && !play) status = 'clickToPlay';
     
     if (!play && finish) status = 'clickToReplay';
+    
 
     return status
   }, [hide, play, finish]);
@@ -154,6 +155,7 @@ const PlayerSection = ({ hide=false, id }) => {
         </PlayerHead>
         <PlayerWrapper>
           <ToggleSlider ref={playerSliderRef}>
+            <PauseMask onClick={handleVideoPause} />
             <Player className="player" ref={playerRef} onReady={handleCheckApplicationReady} id={id} />
           </ToggleSlider>
         </PlayerWrapper>
@@ -222,6 +224,15 @@ const ControllerWrapper = styled.div`
 `
 
 const PlayerWrapper = styled.div`
+  position: relative;
+`
+const PauseMask = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
 `
 
 const SentenceWrapper = styled.div`
@@ -229,11 +240,14 @@ const SentenceWrapper = styled.div`
   padding-bottom: 120px;
 `
 
+
 const ButtonWrapper = styled.div`
+  display: flex;
   position: fixed;
-  bottom: 0;
+  bottom: 120px;
   left: 0;
-  width: 480px;
+  width: 100%;
+  height: 0;
   max-width: 100%;
   z-index: 2;
 `
@@ -242,14 +256,23 @@ const rotationAnimation = keyframes`
   from { transform: rotate(0deg) }
   to { transform: rotate(360deg) }
 `
+
+const bounceAnimation = keyframes`
+  0% { transform: scale(1) }
+  30% { transform: scale(0.9) }
+  80% { transform: scale(0.9) }
+  90% { transform: scale(1.1) }
+  100% { transform: scale(1.1) }
+`
+
 const MainButton = styled(PrimaryButton)`
-  position: fixed;
-  left: 50%;
-  bottom: 5%;
-  transform: translate(-50%, -50%);
+  margin: 0 auto;
   &:disabled svg {
     animation: ${rotationAnimation} 3s linear;
   }
+  ${({ status }) => status === 'clickToPlay' && css`
+    animation: ${bounceAnimation} 1s ease infinite;
+  `}
 `
 
 const PlayerToggleButton = styled(ToggleButton)`
