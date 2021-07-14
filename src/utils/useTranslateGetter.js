@@ -1,8 +1,4 @@
 import { useEffect, useState } from 'react';
-import queryString from 'query-string';
-
-const query = queryString.parse(window.location.search);
-const key = query.key || '';
 
 function useTranslatGetter(word) {
   const [result, setResult] = useState(null);
@@ -21,7 +17,7 @@ function useTranslatGetter(word) {
   return result;
 }
 
-export function handleGetTranslate(word) {
+export function handleGetTranslate(key, word) {
   return new Promise((resolve, reject) => {
     fetch('https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=zh-TW',
     {

@@ -2,16 +2,17 @@ import React, { useState, useRef } from 'react';
 import styled, {css} from 'styled-components';
 import { color } from '../../constant/color';
 import { handleGetTranslate } from '../../utils/useTranslateGetter';
+import { useSelector } from 'react-redux';
 import { Check } from '@styled-icons/boxicons-regular';
 import { Cool } from '@styled-icons/boxicons-solid';
 
 const WordItem = ({ advance=false, data, onUpdate }) => {
   const NoteRef = useRef(null);
-
+  const { translatorKey } = useSelector(state => state.configData);
   const [ active, setActive ] = useState(false);
   const [ check, setCheck ] = useState(false);
   const [ isTranslating, setIsTranslating ] = useState(false);
-  
+
   function handleFocusNote() {
     setActive(true);
     setIsTranslating(false);
@@ -29,7 +30,7 @@ const WordItem = ({ advance=false, data, onUpdate }) => {
     setIsTranslating(true);
     (async function() {
       try {
-        const content = await handleGetTranslate(word);
+        const content = await handleGetTranslate(translatorKey, word);
         NoteRef.current.value = content[0].translations[0].text;
         setIsTranslating(false);
         setActive(false);

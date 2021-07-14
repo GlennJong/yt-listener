@@ -7,10 +7,12 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import wordLibrary from './store/wordLibrary';
 import videoData from './store/videoData';
+import configData from './store/configData';
 
 const reducer = combineReducers({
   wordLibrary: wordLibrary.reducer,
-  videoData: videoData.reducer
+  videoData: videoData.reducer,
+  configData: configData.reducer
 });
 
 const store = createStore(reducer);

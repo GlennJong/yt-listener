@@ -31,7 +31,7 @@ function getCaptionList(ajax_response) {
     return tracks;
   }
   catch (error) {
-    console.log(error);
+    // console.log(error);
     return null;
   }
   
@@ -83,7 +83,7 @@ function getCaption(ajax_response) {
     return captions;
   }
   catch (error) {
-    console.log(error);
+    // console.log(error);
     alert('Oops, something went wrong.');
   }
 }

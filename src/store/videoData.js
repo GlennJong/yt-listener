@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 function updateLocalStorage(data) {
   localStorage.setItem('videoHistory', JSON.stringify(data));
-  console.log('save')
 }
 
 // localStorage data

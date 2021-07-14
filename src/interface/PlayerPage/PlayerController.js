@@ -19,7 +19,7 @@ const PlayerController = forwardRef(({ player, onProgress }, ref) => {
 
   function handleSyncPlayTime() {
     const timer = setInterval(() => {
-      console.log('sync')
+      // console.log('sync')
       handleUpdateProgress(player.getCurrentTime() / player.getDuration());
 
       if (player.getCurrentTime() / player.getDuration() >= 0.99) {
@@ -33,7 +33,7 @@ const PlayerController = forwardRef(({ player, onProgress }, ref) => {
   }
 
   function handleDeSyncPlayTime() {
-    console.log('clear')
+    // console.log('clear')
     clearInterval(timerRef.current);
   }
 
