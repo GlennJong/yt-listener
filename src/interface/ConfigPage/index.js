@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import configData from '../../store/configData';
 import InputItem from '../../components/InputItem';
 
-const ConfigPage = () => {
+const ConfigPage = ({ currentPage }) => {
   const { translatorKey } = useSelector(state => state.configData);
   
   const dispatch = useDispatch(configData);
@@ -14,9 +14,13 @@ const ConfigPage = () => {
   }
   
   return (
-    <Root>
-      <InputItem label="Translator Key" onUpdate={handleSaveTranslatorCode} value={translatorKey} />
-    </Root>
+    <>
+    { currentPage === 'config' &&
+      <Root>
+        <InputItem label="Translator Key" onUpdate={handleSaveTranslatorCode} value={translatorKey} />
+      </Root>
+    }
+    </>
   )
 }
 

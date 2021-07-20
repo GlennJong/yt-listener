@@ -74,7 +74,7 @@ const Root = styled.div`
   box-sizing: border-box;
 `
 const HistorySection = styled.div`
-  padding-top: 12px;
+  padding-top: 48px;
 `
 
 const List = styled.ul`
