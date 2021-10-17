@@ -1,21 +1,32 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-function updateLocalStorage(key) {
+function updateTranslatorKeyToLocalStorage(key) {
   localStorage.setItem('translatorKey', key);
 }
 
-// localStorage data
-let storageTranslatorKey = window.localStorage.getItem('translatorKey') || null;
+function updateYoutubeKeyToLocalStorage(key) {
+  localStorage.setItem('youtubeKey', key);
+}
 
+// localStorage data
+const storageTranslatorKey = window.localStorage.getItem('translatorKey') || null;
+const storageYoutubeKey = window.localStorage.getItem('youtubeKey') || null;
+
+// store
 const configData = createSlice({
     name: 'configData',
     initialState: {
-      'translatorKey': storageTranslatorKey
+      'translatorKey': storageTranslatorKey,
+      'youtubeKey': storageYoutubeKey
     },
     reducers: {
       updateTranslatorKey: (state, action) => {
         state.translatorKey = action.payload;
-        updateLocalStorage(action.payload);
+        updateTranslatorKeyToLocalStorage(action.payload);
+      },
+      updateYoutubeKey: (state, action) => {
+        state.youtubeKey = action.payload;
+        updateYoutubeKeyToLocalStorage(action.payload);
       }
     }
 });

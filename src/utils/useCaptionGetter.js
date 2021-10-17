@@ -98,24 +98,32 @@ function handleFetchYoutubeCaption(id, lang) {
 }
 
 function handleFetchYoutubeCaptionList(id) {
-  const url = `https://video.google.com/timedtext?type=list&v=${id}`;
-  return new Promise((resolve, reject) => {
-    fetch(url, { method: 'POST' })
-    .then(res => resolve(res.text()))
-    .catch(() => reject(null))
-  })
+  if (id) {
+    const url = `https://video.google.com/timedtext?type=list&v=${id}`;
+    return new Promise((resolve, reject) => {
+      fetch(url, { method: 'POST' })
+      .then(res => {
+        res.status === 200 && resolve(res.text())
+      })
+      .catch((err) => {
+        console.log(err)
+        reject(null)
+      })
+    })
+  }
 }
 
 export async function checkYoutubeCaptionAvailiable(id) {
+  let result;
   const captionList = await handleFetchYoutubeCaptionList(id);
   const currentCaptionList = getCaptionList(captionList);
-  if (currentCaptionList) {
-    const result = currentCaptionList.length !== 0;
-    return result;
+  if (currentCaptionList && currentCaptionList.length !== 0) {
+    result = true;
   }
   else {
-    return false;
+    result = false;
   }
+  return result;
 }
 
 

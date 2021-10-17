@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-
 import GlobalStyle from './components/GlobalStyle';
+import ConfigGetter from './components/ConfigGetter';
 import Interface from './interface/Main';
 import PlayerPage from './interface/PlayerPage';
 import HomePage from './interface/HomePage';
@@ -18,10 +18,12 @@ function App() {
   function handleAutoJumpToPlayerPage() {
     setCurrentPage('player');
   }
+
   
   return (
     <div className="App">
       <GlobalStyle />
+        <ConfigGetter />
         <Interface>
           <HomePage   currentPage={currentPage} onIdReady={handleAutoJumpToPlayerPage} />
           <PlayerPage currentPage={currentPage} />

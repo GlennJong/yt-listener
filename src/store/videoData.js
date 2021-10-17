@@ -12,7 +12,8 @@ const videoData = createSlice({
     name: 'videoData',
     initialState: {
       'id': null,
-      'history': storeData
+      'history': storeData,
+      'search': null
     },
     reducers: {
       clearVideoId: (state) => {
@@ -24,6 +25,9 @@ const videoData = createSlice({
       updateVideoHistory: (state, action) => {
         state.history = action.payload;
         updateLocalStorage(action.payload);
+      },
+      updateSearchResult: (state, action) => {
+        state.search = action.payload;
       }
     }
 });

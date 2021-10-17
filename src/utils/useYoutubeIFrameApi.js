@@ -22,6 +22,7 @@ export const useYoutubeIFrameApi = (id) => {
 
       playerRef.current = player;
     })
+    return () => setData(null);
   }, [])
   
   useEffect(() => {
