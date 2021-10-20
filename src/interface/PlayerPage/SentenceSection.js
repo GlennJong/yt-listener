@@ -36,21 +36,24 @@ const SentenceSection = forwardRef(({ captions, status, onReplayClick }, ref) =>
 
   function handleGetCurrentCaption(sec) {
     let content;
-    const blurSec = sec - 0.5;
+
     captions.forEach(caption => {
       const start = Number(caption.start);
       const end =  start + Number(caption.dur);
-      if (blurSec > start && blurSec <= end) {
+      if (sec > start) {
         content = { 
           start: start,
           end: end,
           content: caption.content,
-          spot: blurSec,
+          spot: sec,
           timestamp: new Date()
         };
+      }
+      else if (sec > end) {
         return;
       }
     });
+
     return content;
   }
 
