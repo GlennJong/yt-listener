@@ -24,8 +24,8 @@ const ConfigPage = ({ currentPage }) => {
       <Root>
         <Title>Config</Title>
         <List>
-          <li><InputItem frame="full" label="Translator Key" onUpdate={handleSaveTranslatorKey} value={translatorKey} /></li>
-          <li><InputItem frame="full" label="Youtube Key" onUpdate={handleSaveYoutubeKey} value={youtubeKey} /></li>
+          <li><InputItem type="password" frame="full" label="Translator Key" onUpdate={handleSaveTranslatorKey} value={translatorKey} /></li>
+          <li><InputItem type="password" frame="full" label="Youtube Key" onUpdate={handleSaveYoutubeKey} value={youtubeKey} /></li>
         </List>
       </Root>
     }

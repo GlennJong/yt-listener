@@ -8,11 +8,13 @@ import reportWebVitals from './reportWebVitals';
 import wordLibrary from './store/wordLibrary';
 import videoData from './store/videoData';
 import configData from './store/configData';
+import guideStatus from './store/guideStatus';
 
 const reducer = combineReducers({
   wordLibrary: wordLibrary.reducer,
   videoData: videoData.reducer,
-  configData: configData.reducer
+  configData: configData.reducer,
+  guideStatus: guideStatus.reducer
 });
 
 const store = createStore(reducer);

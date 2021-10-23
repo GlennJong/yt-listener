@@ -12,6 +12,7 @@ function updateYoutubeKeyToLocalStorage(key) {
 const storageTranslatorKey = window.localStorage.getItem('translatorKey') || null;
 const storageYoutubeKey = window.localStorage.getItem('youtubeKey') || null;
 
+
 // store
 const configData = createSlice({
     name: 'configData',

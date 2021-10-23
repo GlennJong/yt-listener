@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import GlobalStyle from './components/GlobalStyle';
 import ConfigGetter from './components/ConfigGetter';
+import MobileGuideMask from './components/MobileGuideMask';
+import HowToUseBoard from './components/HowToUseBoard';
 import Interface from './interface/Main';
 import PlayerPage from './interface/PlayerPage';
 import HomePage from './interface/HomePage';
@@ -24,6 +26,8 @@ function App() {
     <div className="App">
       <GlobalStyle />
         <ConfigGetter />
+        <MobileGuideMask />
+        <HowToUseBoard />
         <Interface>
           <HomePage   currentPage={currentPage} onIdReady={handleAutoJumpToPlayerPage} />
           <PlayerPage currentPage={currentPage} />

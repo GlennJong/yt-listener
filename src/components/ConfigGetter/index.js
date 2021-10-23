@@ -24,6 +24,7 @@ const ConfigGetter = () => {
     if (query.youtube && query.youtube !== youtubeKey) {
       handleSaveYoutubeKey(query.youtube);
     }
+    window.history.replaceState({}, document.title, window.location.origin);
   }, [])
   
   return (

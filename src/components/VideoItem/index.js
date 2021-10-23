@@ -53,7 +53,7 @@ const PlaceHolder = styled.div`
   height: 90px;
   svg {
     color: ${color.white.normal};
-    animation: ${rotationAnimation} 3s linear;
+    animation: ${rotationAnimation} 3s linear infinite;
   }
 `
 

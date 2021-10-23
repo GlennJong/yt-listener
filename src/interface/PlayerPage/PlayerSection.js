@@ -268,7 +268,7 @@ const bounceAnimation = keyframes`
 const MainButton = styled(PrimaryButton)`
   margin: 0 auto;
   &:disabled svg {
-    animation: ${rotationAnimation} 3s linear;
+    animation: ${rotationAnimation} 3s linear infinite;
   }
   ${({ status }) => status === 'clickToPlay' && css`
     animation: ${bounceAnimation} 1s ease infinite;

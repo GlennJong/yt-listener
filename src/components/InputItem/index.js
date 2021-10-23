@@ -3,7 +3,7 @@ import styled, {css} from 'styled-components';
 import { color } from '../../constant/color';
 import { Check } from '@styled-icons/boxicons-regular';
 
-const InputItem = ({ label, value, frame='bottom', onUpdate }) => {
+const InputItem = ({ label, value, type="text", frame='bottom', onUpdate }) => {
   const inputerRef = useRef(null);
   const [ active, setActive ] = useState(false);
   
@@ -20,7 +20,7 @@ const InputItem = ({ label, value, frame='bottom', onUpdate }) => {
     <Root>
       <Label>{ label }</Label>
       <Wrap>
-        <Inputer frame={frame} active={active} ref={inputerRef} type="text" onFocus={handleFocusInputer} defaultValue={value} />
+        <Inputer frame={frame} active={active} ref={inputerRef} type={type} onFocus={handleFocusInputer} defaultValue={value} />
         { active &&
           <CheckButton onClick={handleSaveInputer} ><Check size="16" /></CheckButton>
         }

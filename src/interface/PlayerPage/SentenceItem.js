@@ -47,7 +47,7 @@ const SentenceItem = ({ data, onReplayClick, onWordClick, ...props}) => {
 
 const Root = styled.li`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   & + li {
     margin-top: 12px;
   }
