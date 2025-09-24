@@ -1,16 +1,19 @@
 import { useRef, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import axios from 'axios';
 import { color } from '../../constant/color';
-import { Search } from '@styled-icons/boxicons-regular';
+import { Loader, Search } from '@styled-icons/boxicons-regular';
 import PrimaryButton from '../../components/PrimaryButton';
 import { useSelector } from 'react-redux';
+import { getMockFetchData } from '../../mock';
 
+const isDemo = import.meta.env.VITE_IS_DEMO;
 
 const InputerSection = ({ onResult }) => {
   const inputRef = useRef(null);
   const { youtubeKey } = useSelector(state => state.configData);
   const [ message, setMessage ] = useState(null);
+  const [ isFetching, setIsFetching ] = useState(false);
   const [ active, setActive ] = useState(false);
 
   // Input content checker
@@ -54,7 +57,12 @@ const InputerSection = ({ onResult }) => {
       onResult([videoId])
     }
     else {
-      const searchResult = await searchByKeyword(value);
+      setIsFetching(true);
+      const searchResult = isDemo ?
+        await getMockFetchData('search', 3000)
+        : 
+        await searchByKeyword(value);
+
       const result = searchResult.map(item => {
         return ({
           id: item.id.videoId,
@@ -65,8 +73,8 @@ const InputerSection = ({ onResult }) => {
       }).filter(item => item);
       
       
-      // exclude youtube channel
       onResult(result);
+      setIsFetching(false);
     }
   }
   
@@ -115,7 +123,15 @@ const InputerSection = ({ onResult }) => {
         { message && <Msg><p>{ message }</p></Msg> }
       </InputWrap>
       <ButtonWrap active={active}>
-        <Button disabled={!active} onClick={handleClickSearch}><Search size="24" /></Button>
+        <Button disabled={!active || isFetching} onClick={handleClickSearch}>
+          { isFetching ?
+            <RotationAnimation>
+              <Loader size="24" />
+            </RotationAnimation>
+            :
+            <Search size="24" />
+          }
+        </Button>
       </ButtonWrap>
     </Root>
   )
@@ -160,6 +176,17 @@ const Msg = styled.div`
       transform: translateX(-50%);
     }
 
+  }
+`
+
+const rotationAnimation = keyframes`
+  from { transform: rotate(0deg) }
+  to { transform: rotate(360deg) }
+`
+
+const RotationAnimation = styled.div`
+  svg {
+    animation: ${rotationAnimation} 3s linear infinite;
   }
 `
 

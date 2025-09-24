@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { getMockFetchData } from '../mock';
 
 const REFETCH_TIME = 10000;
+
+const isDemo = import.meta.env.VITE_IS_DEMO;
 
 const useCaptionGetter = (id) => {
   const timerRef = useRef(null);
@@ -37,7 +40,11 @@ const useCaptionGetter = (id) => {
   
   const handleInitCaption = async(id) => {
     try {
-      const result = await handleFetchYoutubeCaption(id);
+      const result = isDemo ?
+        await getMockFetchData('transcript', 3000)
+        :
+        await handleFetchYoutubeCaption(id);
+
       switch (result.status) {
         case "generating":
           setStatus('generating');
