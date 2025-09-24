@@ -5,8 +5,7 @@ import configData from '../../store/configData';
 import InputItem from '../../components/InputItem';
 import { color } from '../../constant/color';
 
-// const isDemo = import.meta.env.VITE_IS_DEMO;
-const isDemo = true;
+const isDemo = import.meta.env.VITE_IS_DEMO;
 
 const ConfigPage = ({ currentPage }) => {
   const {
