@@ -20,7 +20,10 @@ const InputerSection = ({ onResult }) => {
   function handleCheckInputAvailiable() {
     const value = inputRef.current.value;
 
-    if (!isDemo) {
+    if (isDemo) {
+      setActive(true);
+    }
+    else {
       handleCheckKeywordAvailiable(value);
     }
   }
