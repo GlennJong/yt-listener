@@ -28,8 +28,6 @@ jobs:
 
       - name: Build
         run: yarn build
-        env:
-          VITE_API_KEY: ${{ secrets.VITE_API_KEY }} # more variables/secrets here
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
