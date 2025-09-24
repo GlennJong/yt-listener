@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import GlobalStyle from './components/GlobalStyle';
-import ConfigGetter from './components/ConfigGetter';
 import MobileGuideMask from './components/MobileGuideMask';
 import HowToUseBoard from './components/HowToUseBoard';
 import Interface from './interface/Main';
@@ -25,7 +24,6 @@ function App() {
   return (
     <div className="App">
       <GlobalStyle />
-        <ConfigGetter />
         <MobileGuideMask />
         <HowToUseBoard />
         <Interface>
