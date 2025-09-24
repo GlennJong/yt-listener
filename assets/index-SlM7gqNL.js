@@ -847,7 +847,7 @@ and hurt you ♪`,from:207920,to:211320}]}};function iy(n,o=5e3){return new Prom
   ${({disabled:n})=>n&&Ve`
     color: ${J.gray.normal};
   `}
-`,Eu=!0,tw=({currentPage:n})=>{const{youtubeKey:o,transcriptGetterEndpoint:a,transcriptToken:l}=Ht(y=>y.configData),s=hn(ao);function c(y){s(ao.actions.updateYoutubeKey(y))}function p(y){s(ao.actions.updateTranscriptGetterEndpoint(y))}function v(y){s(ao.actions.updateTranscriptToken(y))}return P.jsx(P.Fragment,{children:n==="config"&&P.jsxs(rw,{children:[P.jsx(nw,{children:"Config"}),P.jsxs(ow,{children:[P.jsx("li",{children:P.jsx(ku,{type:"text",disabled:Eu,frame:"full",label:"Transcript Getter Endpoint",onUpdate:p,value:a})}),P.jsx("li",{children:P.jsx(ku,{type:"text",disabled:Eu,frame:"full",label:"Transcript Token",onUpdate:v,value:l})}),P.jsx("li",{children:P.jsx(ku,{type:"password",disabled:Eu,frame:"full",label:"Youtube Key",onUpdate:c,value:o})})]})]})})},rw=K.div`
+`,Eu=!1,tw=({currentPage:n})=>{const{youtubeKey:o,transcriptGetterEndpoint:a,transcriptToken:l}=Ht(y=>y.configData),s=hn(ao);function c(y){s(ao.actions.updateYoutubeKey(y))}function p(y){s(ao.actions.updateTranscriptGetterEndpoint(y))}function v(y){s(ao.actions.updateTranscriptToken(y))}return P.jsx(P.Fragment,{children:n==="config"&&P.jsxs(rw,{children:[P.jsx(nw,{children:"Config"}),P.jsxs(ow,{children:[P.jsx("li",{children:P.jsx(ku,{type:"text",disabled:Eu,frame:"full",label:"Transcript Getter Endpoint",onUpdate:p,value:a})}),P.jsx("li",{children:P.jsx(ku,{type:"text",disabled:Eu,frame:"full",label:"Transcript Token",onUpdate:v,value:l})}),P.jsx("li",{children:P.jsx(ku,{type:"password",disabled:Eu,frame:"full",label:"Youtube Key",onUpdate:c,value:o})})]})]})})},rw=K.div`
   position: relative;
   padding: 16px;
   height: 100vh;
