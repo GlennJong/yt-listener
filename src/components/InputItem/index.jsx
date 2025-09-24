@@ -3,7 +3,7 @@ import styled, {css} from 'styled-components';
 import { color } from '../../constant/color';
 import { Check } from '@styled-icons/boxicons-regular';
 
-const InputItem = ({ label, disabled, value, type="text", frame='bottom', onUpdate }) => {
+const InputItem = ({ label, disabled=false, value, type="text", frame='bottom', onUpdate }) => {
   const inputerRef = useRef(null);
   const [ active, setActive ] = useState(false);
   
