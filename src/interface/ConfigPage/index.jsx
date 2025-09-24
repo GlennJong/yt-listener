@@ -6,16 +6,29 @@ import InputItem from '../../components/InputItem';
 import { color } from '../../constant/color';
 
 const ConfigPage = ({ currentPage }) => {
-  const { translatorKey, youtubeKey } = useSelector(state => state.configData);
+  const {
+    // translatorKey,
+    youtubeKey,
+    transcriptGetterEndpoint,
+    transcriptToken
+  } = useSelector(state => state.configData);
   
   const dispatch = useDispatch(configData);
 
-  function handleSaveTranslatorKey(value) {
-    dispatch(configData.actions.updateTranslatorKey(value));
-  }
+  // function handleSaveTranslatorKey(value) {
+  //   dispatch(configData.actions.updateTranslatorKey(value));
+  // }
 
   function handleSaveYoutubeKey(value) {
     dispatch(configData.actions.updateYoutubeKey(value));
+  }
+  
+  function handleSaveTranscriptGetterEndpoint(value) {
+    dispatch(configData.actions.updateTranscriptGetterEndpoint(value));
+  }
+
+  function handleSaveTranscriptToken(value) {
+    dispatch(configData.actions.updateTranscriptToken(value));
   }
   
   return (
@@ -24,8 +37,42 @@ const ConfigPage = ({ currentPage }) => {
       <Root>
         <Title>Config</Title>
         <List>
-          <li><InputItem type="password" frame="full" label="Translator Key" onUpdate={handleSaveTranslatorKey} value={translatorKey} /></li>
-          <li><InputItem type="password" frame="full" label="Youtube Key" onUpdate={handleSaveYoutubeKey} value={youtubeKey} /></li>
+          <li>
+            <InputItem
+              type="text"
+              frame="full"
+              label="Transcript Getter Endpoint"
+              onUpdate={handleSaveTranscriptGetterEndpoint}
+              value={transcriptGetterEndpoint}
+            />
+          </li>
+          <li>
+            <InputItem
+              type="text"
+              frame="full"
+              label="Transcript Token"
+              onUpdate={handleSaveTranscriptToken}
+              value={transcriptToken}
+            />
+          </li>
+          {/* <li>
+            <InputItem
+              type="password"
+              frame="full"
+              label="Translator Key"
+              onUpdate={handleSaveTranslatorKey}
+              value={translatorKey}
+            />
+          </li> */}
+          <li>
+            <InputItem
+              type="password"
+              frame="full"
+              label="Youtube Key"
+              onUpdate={handleSaveYoutubeKey}
+              value={youtubeKey}
+            />
+          </li>
         </List>
       </Root>
     }

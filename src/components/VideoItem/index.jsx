@@ -1,22 +1,19 @@
-import React from 'react';
 import styled, {keyframes} from 'styled-components';
 import { color } from '../../constant/color';
-import { useYoutubeIFrameApi } from '../../utils/useYoutubeIFrameApi';
 import { Loader } from '@styled-icons/boxicons-regular';
 
-const VideoItem = ({id, onClick, ...props}) => {
-  const data = useYoutubeIFrameApi(id);
+const VideoItem = ({id, title, cover, onClick, ...props}) => {
 
   function handleClickVideoItem() {
-    onClick(id);
+    onClick();
   }
   
   return (
     <>{
-      data ?
+      (cover && id && title) ?
       <Root {...props} onClick={handleClickVideoItem}>
-        <img src={data.cover} alt="" />
-        <div className="title">{data.title}</div>
+        <img src={cover} alt="" />
+        <div className="title">{title}</div>
       </Root>
       :
       <PlaceHolder><Loader size={24} /></PlaceHolder>

@@ -16,6 +16,7 @@ import { Youtube as YoutubeIcon } from '@styled-icons/boxicons-logos';
 import { Play, Pause, Plus, Loader, Reset } from '@styled-icons/boxicons-regular';
 
 const PlayerSection = ({ hide=false, id }) => {
+  const prevId = useRef();
   const playerSliderRef = useRef(null);
   const controllerSliderRef = useRef(null);
   const appRef = useRef(null);
@@ -25,54 +26,73 @@ const PlayerSection = ({ hide=false, id }) => {
   const controllerRef = useRef(null);
   const timerRef = useRef(null);
 
-  const [ play, setPlay ] = useState(false);
-  const [ finish, setFinish ] = useState(false);
-  const [ ready, setReady ] = useState(false);
+  const [ isPlay, setIsPlay ] = useState(false);
+  const isPlayRef = useRef(false);
+  const [ isFinish, setIsFinish ] = useState(false);
   const [ videoData, setVideoData ] = useState(null);
 
-  const captions = useCaptionGetter(id);
+  const { data: captions, status} = useCaptionGetter(id);
 
   function handleCheckApplicationReady(data) {
     setVideoData(data);
-    if (captions) setReady(true);
   }
+  
+  useEffect(() => {
+    isPlayRef.current = isPlay;
+  }, [isPlay])
+
+  useEffect(() => {
+    if (id !== prevId.current) {
+      setIsPlay(false);
+      setIsFinish(false);
+    }
+  }, [id])
 
   useEffect(() => {
     if (playerRef.current && !hide) {
       const isFinish = playerRef.current.getCurrentTime() / playerRef.current.getDuration() >= 0.99;
-      isFinish && setFinish(true);
+      isFinish && setIsFinish(true);
     }
   }, [playerRef, hide]);
 
   useEffect(() => {
     if (controllerRef.current) {
-      if (hide) controllerRef.current.deSync()
-      else controllerRef.current.sync()
+      if (hide) {
+        controllerRef.current.deSync();
+      }
+      else {
+        if (prevId.current === id) {
+          controllerRef.current.sync()
+        }
+        else {
+          prevId.current = id;
+          controllerRef.current.deSync();
+        }
+      }
     }
   }, [hide])
 
   const MainButtonStatus = useMemo(() => {
-    let status;
+    let result;
     // 在介面 | 已播放
-    if (!hide && play) status = 'clickToSave';
+    if (!hide && isPlay) result = 'clickToSave';
     // 不在介面 | 已播放
-    if (hide && play) status = 'clickToPause';
+    if (hide && isPlay) result = 'clickToPause';
     // 不在介面 | 已播放
     
     // 在介面 | 已暫停
-    if (!hide && !play) status = 'clickToPlay';
+    if (!hide && !isPlay) result = 'clickToPlay';
     // 不在介面 | 已暫停
-    if (hide && !play) status = 'clickToPlay';
+    if (hide && !isPlay) result = 'clickToPlay';
     
-    if (!play && finish) status = 'clickToReplay';
-    
+    if (!isPlay && isFinish) result = 'clickToReplay';
 
-    return status
-  }, [hide, play, finish]);
+    return result
+  }, [hide, isPlay, isFinish]);
 
   useEffect(() => {
-    updateFinishTimer(play ? 'play' : 'stop');
-  }, [play]);
+    updateFinishTimer(isPlay ? 'play' : 'stop');
+  }, [isPlay]);
 
   function handleClickMainButton() {
     switch (MainButtonStatus) {
@@ -110,20 +130,20 @@ const PlayerSection = ({ hide=false, id }) => {
   function handleVideoPlay() {
     playerRef.current.playVideo();
     if (!hide) controllerRef.current.sync();
-    setPlay(true);
+    setIsPlay(true);
   }
 
   function handleVideoReplay() {
     playerRef.current.playVideo();
     if (!hide) controllerRef.current.sync();
-    setFinish(false);
-    setPlay(true);
+    setIsFinish(false);
+    setIsPlay(true);
   }
 
   function handleVideoPause() {
     playerRef.current.pauseVideo();
     controllerRef.current.deSync();
-    setPlay(false);
+    setIsPlay(false);
   }
 
   function handleTogglePlayerSlider() {
@@ -134,23 +154,26 @@ const PlayerSection = ({ hide=false, id }) => {
     controllerSliderRef.current.toggle();
   }
 
-  function updateFinishTimer(status='play') {
+  function updateFinishTimer(playStatus='play') {
     clearTimeout(timerRef.current);
 
-    if (status === 'play') {
+    if (playStatus === 'play') {
       const delta = playerRef.current.getDuration() - playerRef.current.getCurrentTime();
       timerRef.current = setTimeout(() => {
-        setPlay(false);
-        setFinish(true);
+        setIsPlay(false);
+        setIsFinish(true);
       }, delta * 1000);
     }
   }
+
+  const isReady = status === 'success' && status !== 'error';
+  const isPending = status === 'pending' || status === 'generating';
   
   return (
     <Root>
       <Application ref={appRef} hide={hide}>
         <PlayerHead>
-          <PlayerTitle status={play} title={videoData?.title} onClick={handleToggleControllerSlider} />
+          <PlayerTitle status={isPlay} title={videoData?.title} onClick={handleToggleControllerSlider} />
           <PlayerToggleButton onClick={handleTogglePlayerSlider}><YoutubeIcon size="16" /></PlayerToggleButton>
         </PlayerHead>
         <PlayerWrapper>
@@ -161,23 +184,29 @@ const PlayerSection = ({ hide=false, id }) => {
         </PlayerWrapper>
         <ControllerWrapper>
           <ToggleSlider ref={controllerSliderRef}>
-            <PlayerController ref={controllerRef} player={playerRef.current} onProgress={updateFinishTimer} />
+            <PlayerController ref={controllerRef} player={playerRef.current} onProgress={() => updateFinishTimer()} />
           </ToggleSlider>
         </ControllerWrapper>
-        { !ready && <div>prepare the caption.</div> }
-        { ready && <>
+        { status === 'error' && <div>Oh no! Something went wrong, please choose another video.</div> }
+        { !isReady &&
+          <div>
+            preparing the caption.<br />
+            { isPending && 'it may take a minute or two, check other videos. 😉' }
+          </div>
+        }
+        { isReady && captions && <>
           <SentenceWrapper>
             <SentenceSection status={MainButtonStatus} captions={captions} ref={listRef} onReplayClick={handleVideoMove} />
           </SentenceWrapper>
         </> }
       </Application>
       <ButtonWrapper>
-        <MainButton status={MainButtonStatus} disabled={!ready} onClick={handleClickMainButton}>
-          { !ready && <Loader size="24" />  }
-          { (ready && MainButtonStatus === 'clickToPlay')   && <Play size="24" /> }
-          { (ready && MainButtonStatus === 'clickToReplay') && <Reset size="24" /> }
-          { (ready && MainButtonStatus === 'clickToSave')   && <Plus size="24" /> }
-          { (ready && MainButtonStatus === 'clickToPause')  && <Pause size="24" /> }
+        <MainButton status={MainButtonStatus} disabled={!isReady} onClick={handleClickMainButton}>
+          { !isReady && <Loader size="24" />  }
+          { (isReady && MainButtonStatus === 'clickToPlay')   && <Play size="24" /> }
+          { (isReady && MainButtonStatus === 'clickToReplay') && <Reset size="24" /> }
+          { (isReady && MainButtonStatus === 'clickToSave')   && <Plus size="24" /> }
+          { (isReady && MainButtonStatus === 'clickToPause')  && <Pause size="24" /> }
         </MainButton>
       </ButtonWrapper>
     </Root>

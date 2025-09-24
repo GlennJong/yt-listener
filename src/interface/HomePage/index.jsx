@@ -1,6 +1,5 @@
-import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import videoData from '../../store/videoData';
 import InputerSection from './InputerSection'
 import VideoItem from '../../components/VideoItem';
@@ -14,29 +13,32 @@ const HomePage = ({ currentPage, onIdReady }) => {
     dispatch(videoData.actions.updateSearchResult(data));
   }
 
-  function addVideoToHistoryList(id) {
+  function addVideoToHistoryList(video) {
+    const { id } = video;
     const currentHistory = [...history];
-    if (currentHistory.findIndex(video => video === id) === -1) {
-      currentHistory.push(id);
-      const reduceHistory = currentHistory.slice(currentHistory.length-4, currentHistory.length);
+    if (currentHistory.findIndex(_video => _video.id === id) === -1) {
+      currentHistory.push(video);
+      let reduceHistory;
+      if (currentHistory.length > 10) {
+        reduceHistory = currentHistory.slice(currentHistory.length - 10, currentHistory.length);
+      } else {
+        reduceHistory = currentHistory;
+      }
       dispatch(videoData.actions.updateVideoHistory(reduceHistory));
     }
   }
 
-  function applyVideoData(id) {
-    if (currentId === id) {
+  function applyVideoData(data) {
+    if (currentId === data.id) {
       onIdReady();
     }
     else {
-      dispatch(videoData.actions.clearVideoId());
-      setTimeout(() => {
-        dispatch(videoData.actions.updateVideoId(id));
-        onIdReady();
-      }, 300);
+      dispatch(videoData.actions.updateVideoId(data.id));
+      onIdReady();
     }
 
     // add to history
-    addVideoToHistoryList(id);
+    addVideoToHistoryList(data);
   }
 
   function orderDataByLatest(data) {
@@ -45,7 +47,6 @@ const HomePage = ({ currentPage, onIdReady }) => {
     return reverseData;
   }
 
-  
   return (
     <>
     {
@@ -64,8 +65,15 @@ const HomePage = ({ currentPage, onIdReady }) => {
               </NotFound>
             }
             <List>
-              { search?.map((item, i) =>
-                <li key={i}><VideoItem id={item} onClick={applyVideoData} /></li>
+              { search?.map((item) =>
+                <li key={item.id}>
+                  <VideoItem
+                    id={item.id}
+                    cover={item.cover}
+                    title={item.title}
+                    onClick={() => applyVideoData(item)}
+                  />
+                </li>
               ) }
             </List>
           </SearchSection>
@@ -74,8 +82,15 @@ const HomePage = ({ currentPage, onIdReady }) => {
           <HistorySection>
             <Title>觀看紀錄</Title>
             <List>
-              { orderDataByLatest(history)?.map((item, i) =>
-                <li key={i}><VideoItem id={item} onClick={applyVideoData} /></li>
+              { orderDataByLatest(history)?.map((item) =>
+                <li key={item.id}>
+                  <VideoItem
+                    id={item.id}
+                    cover={item.cover}
+                    title={item.title}
+                    onClick={() => applyVideoData(item)}
+                  />
+                </li>
               ) }
             </List>
           </HistorySection>

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, forwardRef, useState } from 'react';
+import React, { useRef, useEffect, forwardRef } from 'react';
 import styled from 'styled-components';
 import { Rewind, FastForward } from '@styled-icons/boxicons-regular';
 import { color } from '../../constant/color';
@@ -19,7 +19,6 @@ const PlayerController = forwardRef(({ player, onProgress }, ref) => {
 
   function handleSyncPlayTime() {
     const timer = setInterval(() => {
-      // console.log('sync')
       handleUpdateProgress(player.getCurrentTime() / player.getDuration());
 
       if (player.getCurrentTime() / player.getDuration() >= 0.99) {
@@ -28,12 +27,12 @@ const PlayerController = forwardRef(({ player, onProgress }, ref) => {
     }, 300);
 
     timerRef.current = timer;
-    
-    setTimeout(() => onProgress(), 300);
+    setTimeout(() => {
+      onProgress()
+    }, 300);
   }
 
   function handleDeSyncPlayTime() {
-    // console.log('clear')
     clearInterval(timerRef.current);
   }
 
@@ -59,13 +58,16 @@ const PlayerController = forwardRef(({ player, onProgress }, ref) => {
 
   function handleClickRewind() {
     player.seekTo(player.getCurrentTime() - (player.getDuration()/30));
-    setTimeout(() => onProgress(), 300);
-
+    setTimeout(() => {
+      onProgress()
+    }, 300);
   }
 
   function handleClickForward() {
     player.seekTo(player.getCurrentTime() + (player.getDuration()/30));
-    setTimeout(() => onProgress(), 300);
+    setTimeout(() => {
+      onProgress()
+    }, 300);
 
   }
   

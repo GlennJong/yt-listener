@@ -37,22 +37,22 @@ const SentenceSection = forwardRef(({ captions, status, onReplayClick }, ref) =>
   function handleGetCurrentCaption(sec) {
     let content;
 
-    captions.forEach(caption => {
-      const start = Number(caption.start);
-      const end =  start + Number(caption.dur);
-      if (sec > start) {
+    for (let i = 0; i < captions.length; i++) {
+      const startSec = Number(captions[i].from) / 1000;
+      const endSec =  Number(captions[i].to) / 1000;
+      if (sec > startSec) {
         content = { 
-          start: start,
-          end: end,
-          content: caption.content,
+          start: startSec,
+          end: endSec,
+          content: captions[i].text,
           spot: sec,
           timestamp: new Date()
         };
       }
-      else if (sec > end) {
+      else if (sec > endSec) {
         return;
       }
-    });
+    }
 
     return content;
   }

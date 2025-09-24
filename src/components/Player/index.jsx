@@ -21,7 +21,6 @@ const YoutubePlayer = forwardRef(({ id, onReady=null, ...props }, ref) => {
   }, [video])
 
   function handleListenPlayer(item) {
-    console.log('work')
     setVideo(item.target);
 
     const data = {

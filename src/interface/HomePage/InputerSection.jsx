@@ -1,11 +1,11 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import axios from 'axios';
 import { color } from '../../constant/color';
 import { Search } from '@styled-icons/boxicons-regular';
 import PrimaryButton from '../../components/PrimaryButton';
-import { checkYoutubeCaptionAvailiable } from '../../utils/useCaptionGetter';
 import { useSelector } from 'react-redux';
+
 
 const InputerSection = ({ onResult }) => {
   const inputRef = useRef(null);
@@ -17,12 +17,7 @@ const InputerSection = ({ onResult }) => {
   function handleCheckInputAvailiable() {
     const value = inputRef.current.value;
 
-    if (checkYoutubeType(value)) {
-      handleCheckUrlAvailiable(value);
-    }
-    else {
-      handleCheckKeywordAvailiable(value);
-    }
+    handleCheckKeywordAvailiable(value);
   }
 
   function handleCheckKeywordAvailiable(keyword) {
@@ -50,43 +45,6 @@ const InputerSection = ({ onResult }) => {
 
     return result;
   }
-  
-  function handleCheckUrlAvailiable(url) {
-    if (url.length === 0) {
-      setActive(false);
-      setMessage(null);
-    }
-    else {
-      let video_id = (url.split('v=')[1] || url.split('youtu.be/')[1]) || null;
-      
-      if (video_id && video_id.length >= 11) {
-        const ampersandPosition = video_id.indexOf('&');
-        if (ampersandPosition != -1) {
-          video_id = video_id.substring(0, ampersandPosition);
-        }
-        
-        handleCheckCaption(video_id);
-      }
-      else {
-        setMessage('Hmm... 請輸入正確的影片網址 😮')
-        setActive(false);
-      }
-    }
-  }
-
-  function handleCheckCaption(id) {
-    checkYoutubeCaptionAvailiable(id).then(res => {
-      if (res === false) {
-        setMessage('Oops! 這支影片沒有提供可用字幕 😓')
-        setActive(false);
-      }
-      else {
-        setMessage(null);
-        setActive(true);
-      }
-    });
-  }
-
 
   async function handleClickSearch() {
     const value = inputRef.current.value;
@@ -96,20 +54,43 @@ const InputerSection = ({ onResult }) => {
       onResult([videoId])
     }
     else {
-      const results = await searchByKeyword(value);
-      onResult(results)
+      const searchResult = await searchByKeyword(value);
+      const result = searchResult.map(item => {
+        return ({
+          id: item.id.videoId,
+          cover: item.snippet.thumbnails.medium.url,
+          title: item.snippet.title,
+          description: item.snippet.description
+        })
+      }).filter(item => item);
+      
+      
+      // exclude youtube channel
+      onResult(result);
     }
   }
   
   async function searchByKeyword(value) {
     let keyword = value.replace(/\s/, '+');
     return new Promise((resolve) => {
-      axios.get(`https://www.googleapis.com/youtube/v3/search?q=${keyword}&key=${youtubeKey}&maxResults=10`)
+      const url = `https://www.googleapis.com/youtube/v3/search` +
+        `?q=${keyword}` +
+        `&key=${youtubeKey}` +
+        `&part=snippet` +
+        `&videoCaption=closedCaption` +
+        `&videoSyndicated=true` +
+        `&relevanceLanguage=en` +
+        `&maxResults=20` +
+        `&type=video`;
+      axios.get(url)
       .then(res => {
-        filterVideoHasCaption(res.data.items).then(res => resolve(res));
+        resolve(res.data.items);
         setMessage(null)
       })
-      .catch(_ => setMessage('Oops！請檢查 Youtube Key 是否正確'))
+      .catch((err) => {
+        console.err(err);
+        setMessage('Oops！請檢查 Youtube Key 是否正確');
+      })
     })
   }
 
@@ -124,31 +105,13 @@ const InputerSection = ({ onResult }) => {
     return videoId;
   }
   
-
-  function filterVideoHasCaption(data) {
-    const currentData = [];
-    let count = 0;
-    let max = 5;
-    return new Promise((resolve) => {
-
-      data.forEach(item => {
-        checkYoutubeCaptionAvailiable(item?.id?.videoId).then(res => {
-          count += 1;
-          res && currentData.push(item.id.videoId);
-          if (count === data.length) resolve(currentData);
-        });
-      })
-    })
-  }
-
-  
   return (
     <Root>
       <InputWrap>
         <Input ref={inputRef}
           onChange={handleCheckInputAvailiable}
           type="text"
-          placeholder="貼上 Youtube 影片網址或輸入關鍵字" />
+          placeholder="輸入關鍵字" />
         { message && <Msg><p>{ message }</p></Msg> }
       </InputWrap>
       <ButtonWrap active={active}>

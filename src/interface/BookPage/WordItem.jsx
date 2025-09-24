@@ -36,7 +36,10 @@ const WordItem = ({ advance=false, data, onUpdate }) => {
         setActive(false);
         handleSaveNote();
       }
-      catch (err) { alert('translate false'); }
+      catch (err) {
+        console.error(err);
+        alert('translate false');
+      }
     })()
   }
 
@@ -51,7 +54,7 @@ const WordItem = ({ advance=false, data, onUpdate }) => {
     <Root>
       <Word>{ data.content }</Word>
       <Note active={active} ref={NoteRef} type="text" onFocus={handleFocusNote} defaultValue={data.note} />
-      { active &&
+      { translatorKey && active &&
         <Button disabled={isTranslating} data-word={data.content} onClick={handleClickTranslateButton} >中</Button>
       }
       {

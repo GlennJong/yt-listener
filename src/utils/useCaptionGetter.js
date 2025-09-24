@@ -1,154 +1,96 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-function getCaptionList(ajax_response) {
-  const parser = new DOMParser();
-
-  const xmlDoc = parser.parseFromString(ajax_response, "text/xml");
-
-  const tracks = [];
-  
-  function getTrackContent(node) {
-    if (node.getAttribute('lang_code').includes('en')) {
-      return node.getAttribute('lang_code');
-    }
-  }
-  
-  try {
-    if (xmlDoc.getElementsByTagName("transcript_list").length > 0) {
-      for (var i = 0; i < xmlDoc.getElementsByTagName("transcript_list")[0].childNodes.length; i++) {
-        const caption = getTrackContent(xmlDoc.getElementsByTagName("transcript_list")[0].childNodes[i]);
-        if (caption) tracks.push(caption);
-        
-      }
-    }
-    else {
-      for (var i = 0; i < ajax_response.getElementsByTagName("transcript_list")[0].childNodes.length; i++) {
-        const caption = getTrackContent(ajax_response.getElementsByTagName("transcript_list")[0].childNodes[i]);
-        if (caption) tracks.push(caption);
-      }
-    }
-
-    return tracks;
-  }
-  catch (error) {
-    // console.log(error);
-    return null;
-  }
-  
-}
-
-function getCaption(ajax_response) {
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(ajax_response, "text/xml");
-  const captions = [];
-
-  function decodeEntities(encodedString) {
-    var translate_re = /&(nbsp|amp|quot|lt|gt);/g;
-    var translate = {
-        "nbsp":" ",
-        "amp" : "&",
-        "quot": "\"",
-        "lt"  : "<",
-        "gt"  : ">"
-    };
-    return encodedString.replace(translate_re, function(match, entity) {
-        return translate[entity];
-    }).replace(/&#(\d+);/gi, function(match, numStr) {
-        var num = parseInt(numStr, 10);
-        return String.fromCharCode(num);
-    });
-  }
-  
-  function getTranscriptContent(node) {
-    return {
-      start: node.getAttribute('start'),
-      dur: node.getAttribute('dur'),
-      content: decodeEntities(node.innerHTML)
-    }
-  }
-
-  try {
-    if (xmlDoc.getElementsByTagName("transcript").length > 0) {
-      for (var i = 0; i < xmlDoc.getElementsByTagName("transcript")[0].childNodes.length; i++) {
-        const caption = getTranscriptContent(xmlDoc.getElementsByTagName("transcript")[0].childNodes[i]);
-        captions.push(caption);
-      }
-    }
-    else {
-      for (var i = 0; i < ajax_response.getElementsByTagName("transcript")[0].childNodes.length; i++) {
-        const caption = getTranscriptContent(ajax_response.getElementsByTagName("transcript")[0].childNodes[i]);
-        captions.push(caption);
-      }
-    }
-    return captions;
-  }
-  catch (error) {
-    // console.log(error);
-    alert('Oops, something went wrong.');
-  }
-}
-
-function handleFetchYoutubeCaption(id, lang) {
-  const url = `https://video.google.com/timedtext?type=track&lang=${lang}&v=${id}&id=0`;
-  return new Promise((resolve, reject) => {
-    fetch(url, { method: 'POST' })
-    .then(res => resolve(res.text()))
-    .catch(reject)
-  })
-}
-
-function handleFetchYoutubeCaptionList(id) {
-  if (id) {
-    const url = `https://video.google.com/timedtext?type=list&v=${id}`;
-    return new Promise((resolve, reject) => {
-      fetch(url, { method: 'POST' })
-      .then(res => {
-        res.status === 200 && resolve(res.text())
-      })
-      .catch((err) => {
-        console.log(err)
-        reject(null)
-      })
-    })
-  }
-}
-
-export async function checkYoutubeCaptionAvailiable(id) {
-  let result;
-  const captionList = await handleFetchYoutubeCaptionList(id);
-  const currentCaptionList = getCaptionList(captionList);
-  if (currentCaptionList && currentCaptionList.length !== 0) {
-    result = true;
-  }
-  else {
-    result = false;
-  }
-  return result;
-}
-
+const REFETCH_TIME = 10000;
 
 const useCaptionGetter = (id) => {
+  const timerRef = useRef(null);
+  const [status, setStatus] = useState('preparing');
   const [result, setResult] = useState(null);
+  const { transcriptGetterEndpoint, transcriptToken } = useSelector(state => state.configData);
 
   useEffect(() => {
-    (async function() {
-      try {
-        const captionList = await handleFetchYoutubeCaptionList(id);
-        const currentCaptionList = getCaptionList(captionList);
-        const lang = currentCaptionList !== [] ? currentCaptionList[0] : null;
-        if (lang) {
-          const captionData = await handleFetchYoutubeCaption(id, lang);
-          const currentCaptionData = getCaption(captionData);
-          setResult(currentCaptionData);
-        }
+    setStatus('preparing');
+    setResult(null);
+    handleInitCaption(id);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
+
+
+  function handleFetchYoutubeCaption(id) {
+    if (!transcriptGetterEndpoint || !transcriptToken) return;
+    
+    const url = `${transcriptGetterEndpoint}` +
+      `?videoId=${id}` +
+      `&t=${new Date().getTime().toString()}` +
+      `&token=${transcriptToken}`;
+    
+    return new Promise((resolve, reject) => {
+      fetch(url, { method: 'GET' })
+      .then(res => resolve(res.json()))
+      .catch(reject)
+    })
+  }
+  
+  const handleInitCaption = async(id) => {
+    try {
+      const result = await handleFetchYoutubeCaption(id);
+      switch (result.status) {
+        case "generating":
+          setStatus('generating');
+          break;
+        case "pending":
+          setStatus('pending');
+          break;
+        case "success":
+          setResult(result.data);
+          setStatus('success');
+          break;
+        case "error":
+          setStatus('error');
+          break;
+        default:
+          break;
       }
-      catch (err) {
+    }
+    catch (err) {
+      console.error(err);
+      setStatus('error');
+    }
+  }
+
+  useEffect(() => {
+    if (status === 'generating' || status === 'pending') {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
       }
-    })();
+      timerRef.current = setInterval(() => {
+        handleInitCaption(id);
+      }, REFETCH_TIME);
+    }
+    else if (status === 'success') {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    }
+  }, [status])
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    }
   }, [])
   
   
-  return result;
+  return {
+    data: result,
+    status
+  };
 }
 
 export { useCaptionGetter };

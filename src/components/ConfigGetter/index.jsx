@@ -8,7 +8,6 @@ const ConfigGetter = () => {
   const dispatch = useDispatch(configData);
 
   function handleSaveTranslatorKey(value) {
-    console.log(value)
     dispatch(configData.actions.updateTranslatorKey(value));
   }
 
